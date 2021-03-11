@@ -64,6 +64,7 @@ int searchStudentInfo(string ID = "", string name = "")
 int deleteStudentInfo(string ID)
 {
     int i = searchStudentInfo(ID,);
+    student_list.erase(student_list.begin() + i);
     return 0;
 }
 
@@ -88,11 +89,14 @@ int addStudentScore(string ID, string coursename, int score)
 
 int deleteStudentScore(string ID)
 {
+	 int i = searchStudentInfo(ID,);
+	 score_list.erase(score_list.begin() + i);
     return 0;
 }
 
 int modifyStudentScore(string ID, string coursename, int score)
 {
+	 int i = searchStudentInfo(ID,);
     return 0;
 }
 
