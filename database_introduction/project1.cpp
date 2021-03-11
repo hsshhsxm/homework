@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 struct Student
@@ -19,9 +20,9 @@ struct Score
     int score;
 };
 
-int count = 0
-vector<Student>student_list;
-vector<Score>score_list;
+int count = 0;
+vector<Student> student_list;
+vector<Score> score_list;
 
 int addStudentInfo(string ID = "", string name = "", string birthday = "", string collage = "", string department = "")
 {
@@ -56,14 +57,13 @@ int searchStudentInfo(string ID = "", string name = "")
         }
 
     }
-    else{
+    else
         return -1;
-    }
 }
 
 int deleteStudentInfo(string ID)
 {
-    int i = searchStudentInfo(ID,);
+    int i = searchStudentInfo(ID,"");
     student_list.erase(student_list.begin() + i);
     return 0;
 }
@@ -71,6 +71,7 @@ int deleteStudentInfo(string ID)
 int modifyStudentInfo(string ID, string name, string birthday, string collage, string department)
 {
     int i = searchStudentInfo(ID, name);
+    student_list[i].name = name;
     student_list[i].birthday = birthday;
     student_list[i].collage = collage;
     student_list[i].department = department;
@@ -87,25 +88,71 @@ int addStudentScore(string ID, string coursename, int score)
     return 0;
 }
 
-int deleteStudentScore(string ID)
+vector<string> searchStudentCourse(string ID)
 {
-	 int i = searchStudentInfo(ID,);
-	 score_list.erase(score_list.begin() + i);
+    vector<string> course_list;
+    for(int i = 0; i < count; i++)
+    {
+        if (score_list[i].ID == ID)
+            course_list.push_back(score_list[i].coursename);
+    }
+    return course_list;
+}
+
+int searchStudentScoreID(string ID, string coursename)
+{
+    for (int i = 0; i<count; i++)
+    {
+        if(score_list[i].ID == ID && score_list[i].coursename == coursename)
+            return i;
+    }
+}
+
+void searchStudentAllScore(string ID, map<string, int> &one_course_score_map)
+{
+    vector<string> course_list;
+    course_list = searchStudentCourse(ID);
+    for(int i = 0; i < course_list.size(); i++)
+    {
+        int j = searchStudentScoreID(ID,course_list[i]);
+        one_course_score_map[course_list[i]]=score_list[j].score;
+    }
+}
+
+int deleteStudentOneScore(string ID, string coursename)
+{
+	int i = searchStudentScoreID(ID, coursename);
+    score_list.erase(score_list.begin() + i);
+    return 0;
+}
+
+int deleteStudentAllScore(string ID)
+{
+    vector<string> course_list;
+    course_list = searchStudentCourse(ID);
+    for(int i = 0; i < course_list.size(); i++)
+        deleteStudentOneScore(ID,course_list[i]);
     return 0;
 }
 
 int modifyStudentScore(string ID, string coursename, int score)
 {
-	 int i = searchStudentInfo(ID,);
+	int i = searchStudentScoreID(ID, coursename);
+    score_list[i].score = score;
     return 0;
 }
 
-int readFromFile(file* fp)
+int readFromFile()
 {
     return 0;
 }
 
-int main()
+int writeToFile()
+{
+    return 0;
+}
+
+int main(int argc, char* argv[])
 {
     
     return 0;
