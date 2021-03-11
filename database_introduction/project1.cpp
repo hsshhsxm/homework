@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
 struct Student
@@ -19,10 +20,8 @@ struct Score
 };
 
 int count = 0
-Student * student_list = NULL;
-student_list = new Student[count];
-Score * score_list = NULL;
-score_list = new Score[count];
+vector<Student>student_list;
+vector<Score>score_list;
 
 int addStudentInfo(string ID = "", string name = "", string birthday = "", string collage = "", string department = "")
 {
@@ -34,7 +33,7 @@ int addStudentInfo(string ID = "", string name = "", string birthday = "", strin
     temp_student_info.birthday = birthday;
     temp_student_info.collage = collage;
     temp_student_info.department = department;
-    student_list.append(temp_student_info);
+    student_list.push_back(temp_student_info);
     return 0;
 }
 
@@ -83,7 +82,7 @@ int addStudentScore(string ID, string coursename, int score)
     temp_score.ID = ID;
     temp_score.coursename = coursename;
     temp_score.score = score;
-    score_list.append(temp_score);
+    score_list.push_back(temp_score);
     return 0;
 }
 
