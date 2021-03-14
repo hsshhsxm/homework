@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <map>
@@ -155,7 +156,7 @@ int modifyStudentScore(string ID, string coursename, int score)
 }
 
 //从文件读取数据
-int readFromFile()
+int readFromFile(fstream fs)
 {
     return 0;
 }
