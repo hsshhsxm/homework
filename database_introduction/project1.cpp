@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 #include <map>
@@ -156,8 +157,21 @@ int modifyStudentScore(string ID, string coursename, int score)
 }
 
 //从文件读取数据
-int readFromFile(fstream fs)
+int readFromFile()
 {
+    ifstream file_stu_in;
+    ifstream file_score_in;
+    file_stu_in.open("p1_student.txt");
+    string line;
+    char * temp_string_for_split;
+    while(getline(file_stu_in, line)){
+        cout << line <<endl;
+        
+    }
+        
+    file_score_in.open("p1_score.txt");
+
+    
     return 0;
 }
 
@@ -169,6 +183,6 @@ int writeToFile()
 
 int main(int argc, char* argv[])
 {
-    
+    readFromFile();
     return 0;
 }
