@@ -166,6 +166,7 @@ int readFromFile()
     char * temp_string_for_split;
     while(getline(file_stu_in, line)){
         cout << line <<endl;
+        string buf;
         Student temp_stu;
         vector<string> temp;
         stringstream split_string(line);
