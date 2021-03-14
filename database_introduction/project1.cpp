@@ -4,6 +4,7 @@
 #include <map>
 using namespace std;
 
+//定义数据结构Student和Score
 struct Student
 {
     string ID;
@@ -20,10 +21,11 @@ struct Score
     int score;
 };
 
-int count = 0;
+//用vector存储student和score
 vector<Student> student_list;
 vector<Score> score_list;
 
+//添加学生信息
 int addStudentInfo(string ID = "", string name = "", string birthday = "", string collage = "", string department = "")
 {
     if (ID == "" || name == "")
@@ -38,11 +40,12 @@ int addStudentInfo(string ID = "", string name = "", string birthday = "", strin
     return 0;
 }
 
+//搜索学生信息
 int searchStudentInfo(string ID = "", string name = "")
 {
     if (ID != "")
     {
-        for(int i = 0; i < count; i++)
+        for(int i = 0; i < student_list.size(); i++)
         {
             if (student_list[i].ID == ID)
                 return i;
@@ -50,17 +53,17 @@ int searchStudentInfo(string ID = "", string name = "")
     }
     else if (name != "")
     {
-        for(int i = 0; i < count; i++)
+        for(int i = 0; i < student_list.size(); i++)
         {
             if (student_list[i].name == name)
                 return i;
         }
 
     }
-    else
-        return -1;
+    return -1;
 }
 
+//删除学生信息
 int deleteStudentInfo(string ID)
 {
     int i = searchStudentInfo(ID,"");
@@ -68,6 +71,7 @@ int deleteStudentInfo(string ID)
     return 0;
 }
 
+//修改学生信息
 int modifyStudentInfo(string ID, string name, string birthday, string collage, string department)
 {
     int i = searchStudentInfo(ID, name);
@@ -78,6 +82,7 @@ int modifyStudentInfo(string ID, string name, string birthday, string collage, s
     return 0;
 }
 
+//添加学生成绩
 int addStudentScore(string ID, string coursename, int score)
 {
     Score temp_score;
@@ -88,10 +93,11 @@ int addStudentScore(string ID, string coursename, int score)
     return 0;
 }
 
+//查找学生所修的课程
 vector<string> searchStudentCourse(string ID)
 {
     vector<string> course_list;
-    for(int i = 0; i < count; i++)
+    for(int i = 0; i < score_list.size(); i++)
     {
         if (score_list[i].ID == ID)
             course_list.push_back(score_list[i].coursename);
@@ -99,15 +105,18 @@ vector<string> searchStudentCourse(string ID)
     return course_list;
 }
 
+//查找学生某一刻课程成绩所在的位置
 int searchStudentScoreID(string ID, string coursename)
 {
-    for (int i = 0; i<count; i++)
+    for (int i = 0; i< score_list.size(); i++)
     {
         if(score_list[i].ID == ID && score_list[i].coursename == coursename)
             return i;
     }
+    return -1;
 }
 
+//查找学生的所有成绩
 void searchStudentAllScore(string ID, map<string, int> &one_course_score_map)
 {
     vector<string> course_list;
@@ -119,6 +128,7 @@ void searchStudentAllScore(string ID, map<string, int> &one_course_score_map)
     }
 }
 
+//删除学生一个课程的成绩
 int deleteStudentOneScore(string ID, string coursename)
 {
 	int i = searchStudentScoreID(ID, coursename);
@@ -126,6 +136,7 @@ int deleteStudentOneScore(string ID, string coursename)
     return 0;
 }
 
+//删除学生的所有成绩
 int deleteStudentAllScore(string ID)
 {
     vector<string> course_list;
@@ -135,6 +146,7 @@ int deleteStudentAllScore(string ID)
     return 0;
 }
 
+//修该学生某一课程的成绩
 int modifyStudentScore(string ID, string coursename, int score)
 {
 	int i = searchStudentScoreID(ID, coursename);
@@ -142,11 +154,13 @@ int modifyStudentScore(string ID, string coursename, int score)
     return 0;
 }
 
+//从文件读取数据
 int readFromFile()
 {
     return 0;
 }
 
+//向文件写入数据
 int writeToFile()
 {
     return 0;
