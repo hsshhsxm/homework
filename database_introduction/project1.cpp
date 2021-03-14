@@ -166,9 +166,20 @@ int readFromFile()
     char * temp_string_for_split;
     while(getline(file_stu_in, line)){
         cout << line <<endl;
-        
+        Student temp_stu;
+        vector<string> temp;
+        stringstream split_string(line);
+        while(split_string >> buf){
+            temp.push_back(buf);
+            cout << buf <<endl;
+        }
+        temp_stu.ID = temp[0];
+        temp_stu.name = temp[1];
+        temp_stu.birthday = temp[2];
+        temp_stu.collage = temp[3];
+        temp_stu.department = temp[4];
+        student_list.push_back(temp_stu);
     }
-        
     file_score_in.open("p1_score.txt");
 
     
