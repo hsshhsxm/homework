@@ -229,6 +229,7 @@ int readFromFile()
 //向文件写入数据
 int writeToFile()
 {
+    cout << "信息写回中" << endl;
     ofstream file_stu_out;
     file_stu_out.open("student.txt", ios::out);
     for(int i = 0; i < student_list.size(); i++){
@@ -241,6 +242,7 @@ int writeToFile()
     for(int i = 0; i < score_list.size(); i++){
         file_score_out << score_list[i].ID << " " << score_list[i].coursename << " " << to_string(score_list[i].score) << endl;
     }
+    cout << "信息写回成功" << endl;
     return 0;
 }
 
