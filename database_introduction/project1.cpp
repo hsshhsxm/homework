@@ -229,6 +229,18 @@ int readFromFile()
 //向文件写入数据
 int writeToFile()
 {
+    ofstream file_stu_out;
+    file_stu_out.open("student.txt", ios::out);
+    for(int i = 0; i < student_list.size(); i++){
+        string to_write = student_list[i].ID + " " + student_list[i].name + " " + student_list[i].birthday + " " + student_list[i].collage + " " + student_list[i].department;
+        file_stu_out << to_write <<endl;
+    }
+    file_stu_out.close();
+    ofstream file_score_out;
+    file_score_out.open("score.txt", ios::out);
+    for(int i = 0; i < score_list.size(); i++){
+        file_score_out << score_list[i].ID << " " << score_list[i].coursename << " " << to_string(score_list[i].score) << endl;
+    }
     return 0;
 }
 
@@ -364,5 +376,6 @@ int main(int argc, char* argv[])
 {
     readFromFile();
     terminal();
+    writeToFile();
     return 0;
 }
