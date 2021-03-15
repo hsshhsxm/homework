@@ -254,24 +254,24 @@ int terminal()
         if(str_split[0] == "help"){
             cout << "退出系统：exit" << endl;
             cout << "查看帮助：exit" << endl;
-            cout << "添加学生信息：addstuinfo <ID> <name> <birthday> <colleage> <department>" << endl;
-            cout << "修改学生信息：modifystuinfo <ID> <name> <birthday> <colleage> <department>" << endl;
-            cout << "删除学生信息：deletestuinfo <ID>" << endl;
-            cout << "添加成绩信息：addscoreinfo <ID> <coursename> <score>" << endl;
-            cout << "修改成绩信息：modifyscoreinfo <ID> <coursename> <score>" << endl;
-            cout << "删除单科成绩信息：deleteonescoreinfo <ID> <coursename>" << endl;
-            cout << "删除全部成绩信息：deleteallscoreinfo <ID>" << endl;
+            cout << "添加学生信息：addstu <ID> <name> <birthday> <colleage> <department>" << endl;
+            cout << "修改学生信息：modifystu <ID> <name> <birthday> <colleage> <department>" << endl;
+            cout << "删除学生信息：deletestu <ID>" << endl;
+            cout << "添加成绩信息：addscore <ID> <coursename> <score>" << endl;
+            cout << "修改成绩信息：modifyscore <ID> <coursename> <score>" << endl;
+            cout << "删除单科成绩信息：deleteonescore <ID> <coursename>" << endl;
+            cout << "删除全部成绩信息：deleteallscore <ID>" << endl;
             cout << "通过学号查询学生信息：searchstubyid <ID>" << endl;
             cout << "通过姓名查询学生信息：searchstubyname <name>" << endl;
             cout << "通过学号和课程名查询学生单科成绩信息：searchonescore <ID> <coursename>" << endl;
             cout << "通过学号查询学生所有成绩信息：searchallscore <ID>" << endl;
-        } else if(str_split[0] == "addstuinfo"){
+        } else if(str_split[0] == "addstu"){
             int i = addStudentInfo(str_split[1], str_split[2], str_split[3], str_split[4], str_split[5]);
             if (i == 0)
                 cout << "学生信息添加成功" << endl;
             else
                 cout << "学生信息添加失败：请检查输入" << endl;
-        } else if(str_split[0] == "modifystuinfo"){
+        } else if(str_split[0] == "modifystu"){
             int i = modifyStudentInfo(str_split[1], str_split[2], str_split[3], str_split[4], str_split[5]);
             if (i == 0)
                 cout << "学生信息修改成功" << endl;
@@ -283,25 +283,25 @@ int terminal()
                 cout << "学生信息删除成功" << endl;
             else
                 cout << "学生信息删除失败：未找到此学生信息" << endl;
-        } else if(str_split[0] == "addscoreinfo"){
+        } else if(str_split[0] == "addscore"){
             int i = addStudentScore(str_split[1], str_split[2], stoi(str_split[3]));
             if (i == 0)
                 cout << "成绩信息添加成功" << endl;
             else
                 cout << "成绩信息添加失败：请检查输入" << endl;
-        } else if(str_split[0] == "modifyscoreinfo"){
+        } else if(str_split[0] == "modifyscore"){
             int i = modifyStudentScore(str_split[1], str_split[2], stoi(str_split[3]));
             if (i == 0)
                 cout << "成绩信息修改成功" << endl;
             else
                 cout << "成绩信息修改失败：未找到此成绩信息" << endl;
-        } else if(str_split[0] == "deleteonescoreinfo"){
+        } else if(str_split[0] == "deleteonescore"){
             int i = deleteStudentOneScore(str_split[1], str_split[2]);
             if (i == 0)
                 cout << "成绩信息删除成功" << endl;
             else
                 cout << "成绩信息删除失败：未找到此成绩信息" << endl;
-        } else if(str_split[0] == "deleteallscoreinfo"){
+        } else if(str_split[0] == "deleteallscore"){
             deleteStudentAllScore(str_split[1]);
             cout << "该学生的所有成绩信息删除成功" << endl;
         } else if(str_split[0] == "searchstubyid"){
@@ -318,7 +318,7 @@ int terminal()
                 cout << "未找到该学生信息，请检查输入" << endl;
         } else if(str_split[0] == "searchonescore"){
             int i = searchStudentScoreID(str_split[1], str_split[2]);
-            if (score_list[i].ID != "")
+            if (i > 0)
                 printScoreInfo(i);
             else
                 cout << "未找到该成绩信息，请检查输入" << endl;
