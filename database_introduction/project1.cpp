@@ -169,7 +169,7 @@ int modifyStudentScore(string ID, string coursename, int score)
 //从文件读取数据
 int readFromFile()
 {
-    cout << "信息读取中" << endl;
+    //cout << "信息读取中" << endl;
     //读取学生信息
     ifstream file_stu_in;
     file_stu_in.open("student.txt");
@@ -220,7 +220,7 @@ int readFromFile()
         temp_score.score = stoi(temp[2]);
         score_list.push_back(temp_score);
     }
-    cout << "信息读取成功" << endl;
+    //cout << "信息读取成功" << endl;
     file_stu_in.close();
     file_score_in.close();
     return 0;
@@ -229,7 +229,7 @@ int readFromFile()
 //向文件写入数据
 int writeToFile()
 {
-    cout << "信息写回中" << endl;
+    //cout << "信息写回中" << endl;
     ofstream file_stu_out;
     file_stu_out.open("student.txt", ios::out);
     for(int i = 0; i < student_list.size(); i++){
@@ -242,7 +242,7 @@ int writeToFile()
     for(int i = 0; i < score_list.size(); i++){
         file_score_out << score_list[i].ID << " " << score_list[i].coursename << " " << to_string(score_list[i].score) << endl;
     }
-    cout << "信息写回成功" << endl;
+    //cout << "信息写回成功" << endl;
     return 0;
 }
 
@@ -370,6 +370,7 @@ int terminal()
         } else{
             cout << "无效命令，请检查输入" << endl;
         }
+        writeToFile();
     }
     return 0;
 }
