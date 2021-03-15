@@ -159,20 +159,20 @@ int modifyStudentScore(string ID, string coursename, int score)
 //从文件读取数据
 int readFromFile()
 {
+    cout << "信息读取中" << endl;
+    //读取学生信息
     ifstream file_stu_in;
-    ifstream file_score_in;
     file_stu_in.open("p1_student.txt");
     string line;
-    char * temp_string_for_split;
     while(getline(file_stu_in, line)){
-        cout << line <<endl;
+        //cout << line <<endl;
         string buf;
         Student temp_stu;
         vector<string> temp;
         stringstream split_string(line);
         while(split_string >> buf){
             temp.push_back(buf);
-            cout << buf <<endl;
+            //cout << buf <<endl;
         }
         temp_stu.ID = temp[0];
         temp_stu.name = temp[1];
@@ -181,9 +181,23 @@ int readFromFile()
         temp_stu.department = temp[4];
         student_list.push_back(temp_stu);
     }
+    //读取成绩信息
+    ifstream file_score_in;
     file_score_in.open("p1_score.txt");
-
-    
+    while(getline(file_score_in, line)){
+        string buf;
+        Score temp_score;
+        vector<string> temp;
+        stringstream split_string(line);
+        while(split_string >> buf){
+            temp.push_back(buf);
+        }
+        temp_score.ID = temp[0];
+        temp_score.coursename = temp[1];
+        temp_score.score = stoi(temp[2]);
+        score_list.push_back(temp_score);
+    }
+    cout << "信息读取成功" << endl;
     return 0;
 }
 
