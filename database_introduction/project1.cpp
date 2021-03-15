@@ -170,7 +170,6 @@ int modifyStudentScore(string ID, string coursename, int score)
 int readFromFile()
 {
     //cout << "信息读取中" << endl;
-    //读取学生信息
     ifstream file_stu_in;
     file_stu_in.open("student.txt");
     if(!file_stu_in){
@@ -179,6 +178,15 @@ int readFromFile()
         file_stu.close();
         file_stu_in.open("student.txt");
     }
+        ifstream file_score_in;
+    file_score_in.open("score.txt");
+    if(!file_score_in){
+        ofstream file_score;
+        file_score.open("student.txt");
+        file_score.close();
+        file_score_in.open("student.txt");
+    }
+    //读取学生信息
     string line;
     while(getline(file_stu_in, line)){
         //cout << line <<endl;
@@ -198,14 +206,6 @@ int readFromFile()
         student_list.push_back(temp_stu);
     }
     //读取成绩信息
-    ifstream file_score_in;
-    file_score_in.open("score.txt");
-    if(!file_score_in){
-        ofstream file_score;
-        file_score.open("student.txt");
-        file_score.close();
-        file_score_in.open("student.txt");
-    }
     while(getline(file_score_in, line)){
         string buf;
         Score temp_score;
