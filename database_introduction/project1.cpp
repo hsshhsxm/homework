@@ -172,7 +172,13 @@ int readFromFile()
     cout << "信息读取中" << endl;
     //读取学生信息
     ifstream file_stu_in;
-    file_stu_in.open("p1_student.txt");
+    file_stu_in.open("student.txt");
+    if(!file_stu_in){
+        ofstream file_stu;
+        file_stu.open("student.txt");
+        file_stu.close();
+        file_stu_in.open("student.txt");
+    }
     string line;
     while(getline(file_stu_in, line)){
         //cout << line <<endl;
@@ -193,7 +199,13 @@ int readFromFile()
     }
     //读取成绩信息
     ifstream file_score_in;
-    file_score_in.open("p1_score.txt");
+    file_score_in.open("score.txt");
+    if(!file_score_in){
+        ofstream file_score;
+        file_score.open("student.txt");
+        file_score.close();
+        file_score_in.open("student.txt");
+    }
     while(getline(file_score_in, line)){
         string buf;
         Score temp_score;
@@ -209,6 +221,8 @@ int readFromFile()
         score_list.push_back(temp_score);
     }
     cout << "信息读取成功" << endl;
+    file_stu_in.close();
+    file_score_in.close();
     return 0;
 }
 
