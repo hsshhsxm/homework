@@ -267,7 +267,9 @@ int terminal()
         }
         if(str_split[0] == "help"){
             cout << "退出系统：exit" << endl;
-            cout << "查看帮助：exit" << endl;
+            cout << "查看帮助：help" << endl;
+            cout << "输出所有学生信息：printstu" << endl;
+            cout << "输出所有成绩信息：printscore" << endl;
             cout << "添加学生信息：addstu <ID> <name> <birthday> <colleage> <department>" << endl;
             cout << "修改学生信息：modifystu <ID> <name> <birthday> <colleage> <department>" << endl;
             cout << "删除学生信息：deletestu <ID>" << endl;
@@ -279,6 +281,12 @@ int terminal()
             cout << "通过姓名查询学生信息：searchstubyname <name>" << endl;
             cout << "通过学号和课程名查询学生单科成绩信息：searchonescore <ID> <coursename>" << endl;
             cout << "通过学号查询学生所有成绩信息：searchallscore <ID>" << endl;
+        } else if(str_split[0] == "printstu"){
+            for(int i = 0; i < student_list.size(); i++)
+                printStuInfo(i);
+        } else if(str_split[0] == "printscore"){
+            for(int i = 0; i < score_list.size(); i++)
+                printScoreInfo(i);
         } else if(str_split[0] == "addstu"){
             int i = addStudentInfo(str_split[1], str_split[2], str_split[3], str_split[4], str_split[5]);
             if (i == 0)
@@ -291,7 +299,7 @@ int terminal()
                 cout << "学生信息修改成功" << endl;
             else
                 cout << "学生信息修改失败：未找到此学生信息" << endl;
-        } else if(str_split[0] == "deletestuinfo"){
+        } else if(str_split[0] == "deletestu"){
             int i = deleteStudentInfo(str_split[1]);
             if (i == 0)
                 cout << "学生信息删除成功" << endl;
