@@ -4,8 +4,10 @@ Please complete the following program to ensure that the output is 4 5 1.
 #include <iostream>
 using namespace std;
 class Apple {
-    int nTotalNumber;
-    //Apple(){}
+	public:
+    static int nTotalNumber;
+    Apple(){++nTotalNumber;}
+	~Apple(){--nTotalNumber;}
     //Apple(Apple & a){}
 
 
