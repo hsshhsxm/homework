@@ -11,8 +11,9 @@ class A {
 public:
 	int val;
 
-	A(int
-// 在此处补充你的代码
+	A(int n){ val = n;}
+	A(){val = 123;}
+	A & GetObj(){return (*this);}
 };
 int main()
 {
