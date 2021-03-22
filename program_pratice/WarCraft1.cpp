@@ -68,3 +68,51 @@ Case:1
 
 #include <iostream>
 using namespace std;
+
+class Warrior{
+private:
+    int No;
+    int life;
+    int attack;
+public:
+    int getNo(){return No;}
+    int getLife(){return life;}
+    int getAttack(){return attack;}
+    void setNo(int n){No = n;}
+    void setLife(int n){life = n;}
+    void setAttack(int n){attack = n;}
+};
+//dragon 、ninja、iceman、lion、wolf
+class Dragon::public Warrior{
+
+};
+
+class Ninja::public Warrior{
+
+};
+
+class Iceman::public Warrior{
+
+};
+
+class Lion::public Warrior{
+
+};
+
+class Wolf::public Warrior{
+
+};
+
+class Tribe{
+private:
+    int totalLife;
+        
+};
+
+class RedTribe::public Tribe{
+
+};
+
+class BlueTribe::public Tribe{
+
+};
