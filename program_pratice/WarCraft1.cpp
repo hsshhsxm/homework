@@ -67,52 +67,189 @@ Case:1
 */
 
 #include <iostream>
+#include <vector>
+#include <string>
 using namespace std;
 
+int timeCount = 0;
+string redWarriorList[] = {"iceman","lion","wolf","ninja","dragon"};
+string blueWarriorList[] = {"lion","dragon","ninja","iceman","wolf"};
+
 class Warrior{
-private:
+public:
     int No;
     int life;
     int attack;
-public:
-    int getNo(){return No;}
-    int getLife(){return life;}
-    int getAttack(){return attack;}
-    void setNo(int n){No = n;}
-    void setLife(int n){life = n;}
-    void setAttack(int n){attack = n;}
+    Warrior(){}
+    Warrior(int n, int l):No(n),life(l){}
+    Warrior(int n, int l, int a):No(n),life(l),attack(a){}
 };
 //dragon 、ninja、iceman、lion、wolf
-class Dragon::public Warrior{
+class Dragon:public Warrior{
 
 };
 
-class Ninja::public Warrior{
+class Ninja:public Warrior{
 
 };
 
-class Iceman::public Warrior{
+class Iceman:public Warrior{
 
 };
 
-class Lion::public Warrior{
+class Lion:public Warrior{
 
 };
 
-class Wolf::public Warrior{
+class Wolf:public Warrior{
 
 };
 
 class Tribe{
-private:
-    int totalLife;
-        
+public:
+    int currentLife;
+    int dragonLife, ninjaLife, icemanLife, lionLife, wolfLife;
+    vector<Dragon> dragonList;
+    vector<Ninja> ninjaList;
+    vector<Iceman> icemanList;
+    vector<Lion> lionList;
+    vector<Wolf> wolfList;
+    Tribe(){}
+    Tribe(int c, int d, int n, int i, int l, int w):
+        currentLife(c),dragonLife(d),ninjaLife(d),icemanLife(i),lionLife(l),wolfLife(w){}
+    virtual void printInfo(){}
+    virtual void printFinsih(){}
+    int tribeRunOnce(int i, int No);
 };
 
-class RedTribe::public Tribe{
-
+class RedTribe:public Tribe{
+public:
+    void printInfo(string name, Warrior & currentWarrior, int num){
+        cout.setf(ios::right);
+        cout.fill('0');
+        cout.width(3);
+        cout << timeCount;
+        cout << " " << "red" << " " << name << " ";
+        cout << currentWarrior.No << " " << "born with strength" << " " >>currentWarrior.life << ",";
+        cout << num << " " << name << " in red headquarter" << endl;
+    }
+    void printFinsih(){
+    	cout.setf(ios::right);
+        cout.fill('0');
+        cout.width(3);
+        cout << timeCount;
+        cout << " " << "red headquarter stops making warriors" << endl;
+    }
 };
 
-class BlueTribe::public Tribe{
-
+class BlueTribe:public Tribe{
+public:
+    void printInfo(string name, Warrior & currentWarrior, int num){
+    	cout.setf(ios::right);
+        cout.fill('0');
+        cout.width(3);
+        cout << timeCount;
+        cout << " " << "blue" << " " << name << " ";
+        cout << currentWarrior.No << " " << "born with strength" << " " >>currentWarrior.life << ",";
+        cout << num << " " << name << " in blue headquarter" << endl;
+    }
+    void printFinsih(){
+    	cout.setf(ios::right);
+        cout.fill('0');
+        cout.width(3);
+        cout << timeCount;
+        cout << " " << "blue headquarter stops making warriors" << endl;
+    }
 };
+
+int Tribe::tribeRunOnce(int i, int No){
+    if(redWarriorList[i] == "iceman"){
+        currentLife -= icemanLife;
+        if(currentLife < 0){
+            printFinsih();
+            return -1;
+        }
+        Iceman iceman(No,icemanLife);
+        icemanList.push_back(iceman);
+        printInfo(redWarriorList[i], iceman, icemanList.size());
+        ++timeCount;
+    } else if(redWarriorList[i] == "lion"){
+        currentLife -= lionLife;
+        if(currentLife < 0){
+            printFinsih();
+            return -1;
+        }
+        Lion lion(No, lionLife);
+        lionList.push_back(lion);
+        printInfo(redWarriorList[i], lion, lionList.size());
+        ++timeCount;
+    } else if(redWarriorList[i] == "wolf"){
+        currentLife -= wolfLife;
+        if(currentLife < 0){
+            printFinsih();
+            return -1;
+        }
+        Wolf wolf(No, wolfLife);
+        wolfList.push_back(wolf);
+        printInfo(redWarriorList[i], wolf, wolfList.size());
+        ++timeCount;
+    } else if(redWarriorList[i] == "ninja"){
+        currentLife -= ninjaLife;
+        if(currentLife < 0){
+            printFinsih();
+            return -1;
+        }
+        Ninja ninja(No, ninjaLife);
+        ninjaList.push_back(ninja);
+        printInfo(redWarriorList[i], ninja, ninjaList.size());
+        ++timeCount;
+    } else if(redWarriorList[i] == "dragon"){
+        currentLife -= dragonLife;
+        if(currentLife < 0){
+            printFinsih();
+            return -1;
+        }
+        Dragon dragon(No, dragonLife);
+        dragonList.push_back(dragon);
+        printInfo(redWarriorList[i], dragon, dragonList.size());
+        ++timeCount;
+    } else{
+        return -1;
+    }
+    return 0;
+}
+
+
+void runBegin(int totalLife, int dragonLife, int ninjaLife, int icemanLife, int lionLife, int wolfLife){
+    RedTribe redTribe(totalLife, dragonLife, ninjaLife, icemanLife, lionLife, wolfLife);
+    BlueTribe blueTribe(totalLife, dragonLife, ninjaLife, icemanLife, lionLife, wolfLife);
+    int i = 0, j = 1;
+    int red_judge = redTribe.tribeRunOnce(i, j);
+    int blue_judge = blueTribe.tribeRunOnce(i, j);
+    while((red_judge == 0) || (blue_judge == 0)){
+        ++i;
+        ++j;
+        if(red_judge != -1)
+            red_judge = redTribe.tribeRunOnce(i, j);
+        if(blue_judge != -1)
+            blue_judge = blueTribe.tribeRunOnce(i, j);
+    }
+}
+
+void readInput(){
+    int caseNum;
+    cin << caseNum;
+    for(int i = 0; i < caseNum; ++i){
+        int totalLife;
+        int dragonLife,ninjaLife,icemanLife,lionLife,wolfLife;
+        cin >> totalLife;
+        cin >> dragonLife >> ninjaLife >> icemanLife >> lionLife >> wolfLife;
+        cout << "case:" << i + 1 >> endl;
+        runBegin();
+    }
+}
+
+int main(){
+    readInput();
+    return 0;
+}
