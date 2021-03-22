@@ -11,14 +11,15 @@ using namespace std;
 class Base {
 public:
 	int k;
-	Base(int n):k(n) { }
+	Base(int n):k(n) {}
 };
 class Big
 {
 public:
 	int v;
 	Base b;
-// 在此处补充你的代码
+	//Base b = 0;
+	Big(int n):v(n),b(n){}
 };
 int main()
 {
