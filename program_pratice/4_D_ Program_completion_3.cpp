@@ -14,15 +14,70 @@ next
 using namespace std;
 
 class Array2 {
-// 在此处补充你的代码
+public:
+    int *p;
+    int x,y;
+
+    Array2(){
+        x = 0;
+        y = 0;
+        p = NULL;
+    }
+
+    Array2(int m, int n){
+        x = m;
+        y = n;
+        p = new int[x*y];
+    }
+
+    Array2(Array2 & b){
+        x = b.x;
+        y = b.y;
+        if(b.p){
+            p = new int[x*y];
+            memcpy(p, b.p, sizeof(int)*x*y);
+        }
+        else
+            p = NULL;
+    }
+
+    ~Array2(){
+        if(p)
+            delete [] p;
+    }
+
+    int * operator[](int i){
+        return p + x*i;
+    }
+
+    int & operator()(int i, int j){
+        return p[x*i + j];
+    }
+
+    Array2 & operator=(const Array2 & b){
+        x = b.x;
+        y = b.y;
+        if(b.p){
+            p = new int[x*y];
+            memcpy(p, b.p, sizeof(int)*x*y);
+            return *this;
+        }
+        else{
+            p = NULL;
+            return *this;
+        }
+    }
 };
 
 int main() {
     Array2 a(3,4);
     int i,j;
-    for(  i = 0;i < 3; ++i )
-        for(  j = 0; j < 4; j ++ )
+    for(  i = 0;i < 3; ++i ){
+        for(  j = 0; j < 4; j ++ ){
             a[i][j] = i * 4 + j;
+            //cout << a[i][j] << endl;
+        }
+    }
     for(  i = 0;i < 3; ++i ) {
         for(  j = 0; j < 4; j ++ ) {
             cout << a(i,j) << ",";
