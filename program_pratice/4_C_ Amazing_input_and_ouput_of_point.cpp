@@ -15,7 +15,17 @@ class Point {
 		int y; 
 	public: 
 		Point() { };
-// 在此处补充你的代码
+
+	friend istream & operator>>(istream & input, Point & p){
+		input >> p.x;
+		input >> p.y;
+		return input;
+	}
+
+	friend ostream & operator<<(ostream & output, Point &p){
+		output << p.x << "," << p.y;
+		return output;
+	}
 }; 
 int main() 
 { 

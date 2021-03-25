@@ -18,20 +18,37 @@ class MyInt
 	int nVal; 
 	public: 
 	MyInt( int n) { nVal = n ;}
-// 在此处补充你的代码
+
+	MyInt & operator-(int n){
+		nVal -= n;
+		return *this;
+	}
+
+	friend ostream & operator <<(ostream & output, const MyInt & n){
+		output << n.nVal;
+		return output;
+	}
+
+	operator int(){
+		return nVal;
+	}
 }; 
+
 int Inc(int n) {
 	return n + 1;
 }
+
 int main () { 
 	int n;
 	while(cin >>n) {
 		MyInt objInt(n); 
 		objInt-2-1-3; 
 		cout << Inc(objInt);
+		//cout << objInt;
 		cout <<","; 
 		objInt-2-1; 
 		cout << Inc(objInt) << endl;
+		//cout << objInt;
 	}
 	return 0;
 }

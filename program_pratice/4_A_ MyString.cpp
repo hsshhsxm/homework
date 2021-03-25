@@ -17,7 +17,7 @@ class MyString {
 	char * p;
 public:
 	MyString(const char * s) {
-		if( s) {
+		if(s) {
 			p = new char[strlen(s) + 1];
 			strcpy(p,s);
 		}
@@ -26,7 +26,40 @@ public:
 
 	}
 	~MyString() { if(p) delete [] p; }
-// 在此处补充你的代码
+
+	MyString(const MyString & s){
+		if(s.p){
+			p = new char[strlen(s.p) + 1];
+			strcpy(p,s.p);
+		}
+		else
+			p = NULL;
+	}
+
+	void Copy(const char * s){
+		if(s){
+			p = new char[strlen(s) + 1];
+			strcpy(p,s);
+		} else{
+			p = NULL;
+		}
+	}
+
+	friend ostream &operator<<(ostream &output,const MyString & s){
+		if(s.p)
+			output << s.p;
+		return output;
+	}
+	
+	const MyString & operator=(const MyString & s){
+		if(s.p){
+			p = new char[strlen(s.p) + 1];
+			strcpy(p,s.p);
+		} else{
+			p = NULL;
+		}
+		return *this;
+	}
 };
 int main()
 {
@@ -41,6 +74,5 @@ int main()
 		s3 = s2;
 		s1 = s3;
 		cout << s1 << "," << s2 << "," << s3 << endl;
-		
 	}
 }
