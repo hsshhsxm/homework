@@ -47,11 +47,11 @@ public:
     }
 
     int * operator[](int i){
-        return p + x*i;
+        return p + y*i;
     }
 
     int & operator()(int i, int j){
-        return p[x*i + j];
+        return p[y*i + j];
     }
 
     Array2 & operator=(const Array2 & b){
