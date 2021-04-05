@@ -17,6 +17,17 @@ me
 take
 abcd
 qrst-abcd-
+提示 1：如果将程序中所有 "MyString" 用 "string" 替换，那么除
+了最后两条红色的语句编译无法通过外，其他语句都没有问题，而且输出和前
+面给的结果吻合。也就是说，MyString 类对 string 类的功能扩充只体现在最
+后两条语句上面。 
+
+提示 2: string 类有一个成员函数 string substr(int start,int 
+length); 能够求从 start 位置开始，长度为 length 的子串 
+
+提示 3: C++中，派生类的对象可以赋值给基类对象，因为，一个派生
+类对象，也可看作是一个基类对象（大学生是学生）。反过来则不行(学生未
+必是大学生） 同样，调用需要基类对象作参数的函数时，以派生类对象作为实参，也是没有问题的
 */
 #include <cstdlib>
 #include <iostream>
@@ -25,7 +36,15 @@ qrst-abcd-
 using namespace std;
 class MyString:public string
 {
-// 在此处补充你的代码
+public:
+	MyString():string(){}
+	MyString(const char * s):string(s){}
+	//提示3
+	MyString(const string & s):string(s){}
+
+	string operator()(int i, int j){
+		return substr(i, j);
+	}
 };
 
 
@@ -35,7 +54,7 @@ int main()
 	MyString SArray[4] = {"big","me","about","take"};
 	cout << "1. " << s1 << s2 << s3<< s4<< endl;
 	s4 = s3;
-	s3 = s1 + s3;
+	s3 = s1 + s3;//s1+s3使用的是string的重载，返回值为string，需要将string转换为MyString
 	cout << "2. " << s1 << endl;
 	cout << "3. " << s2 << endl;
 	cout << "4. " << s3 << endl;
