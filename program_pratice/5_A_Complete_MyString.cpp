@@ -24,19 +24,6 @@ qrst-abcd-
 #include <cstdlib>
 #include <iostream>
 using namespace std;
-int strlen(const char * s) 
-{	int i = 0;
-	for(; s[i]; ++i);
-	return i;
-}
-void strcpy(char * d,const char * s)
-{
-	int i = 0;
-	for( i = 0; s[i]; ++i)
-		d[i] = s[i];
-	d[i] = 0;
-		
-}
 int strcmp(const char * s1,const char * s2)
 {
 	for(int i = 0; s1[i] && s2[i] ; ++i) {
@@ -47,16 +34,134 @@ int strcmp(const char * s1,const char * s2)
 	}
 	return 0;
 }
-void strcat(char * d,const char * s)
-{
-	int len = strlen(d);
-	strcpy(d+len,s);
-}
+
 class MyString
 {
-// 在此处补充你的代码
+public:
+	char * str;
+	MyString(const char * s = NULL){
+		if(s){
+			str = new char[strlen(s) + 1];
+			strcpy(str,s);
+		} 
+		else{
+			str = new char[1];
+			str[0] = '\0';
+		}
+			
+	}
+	MyString(const MyString & s){
+		if(str) 
+			delete[] str;
+		if(s.str){
+			str = new char[strlen(s.str) + 1];
+			strcpy(str,s.str);
+		}
+		else{
+			str = new char[1];
+			str[0] = '\0';
+		}
+	}
+	~MyString(){
+		if(str)
+			delete [] str;
+	}
+	friend ostream & operator<<(ostream & output, const MyString & s){
+		if(s.str)
+			output << s.str;
+		return output;
+	}
+	MyString operator+(const MyString & s){
+		char * tmp;
+		if(str){
+			tmp = new char[strlen(str) + strlen(s.str) + 1];
+			strcpy(tmp,str);
+		}
+		else
+			tmp = new char[strlen(s.str) + 1];
+		strcat(tmp,s.str);
+		MyString tmp_str = tmp;
+		delete[] tmp;
+		return tmp_str;
+	}
+	//重要，没有这个重载就会runtime error
+	MyString operator+(const char * s){
+		char * tmp;
+		if(str){
+			tmp = new char[strlen(str) + strlen(s) + 1];
+			strcpy(tmp,str);
+		}
+		else
+			tmp = new char[strlen(s) + 1];
+		strcat(tmp,s);
+		MyString tmp_str = tmp;
+		delete[] tmp;
+		return tmp_str;
+	}
+	
+	MyString & operator+=(const char * s){
+		char * tmp = new char[strlen(str) + 1];
+		strcpy(tmp,str);
+		delete[] str;
+		str = new char[strlen(tmp) + strlen(s) + 1];
+		strcpy(str,tmp);
+		strcat(str,s);
+		return *this;
+	}
+	friend MyString operator+(const char * s1, const MyString & s2){
+		char * s;
+		s = new char[strlen(s1) + strlen(s2.str) + 1];
+		strcpy(s,s1);
+		strcat(s,s2.str);
+		MyString tmp = s;
+		delete[] s;
+		return tmp;
+	}
+	char & operator[](int i){
+		return str[i];
+	}
+	char * operator()(int i, int j){
+		char * tmp;
+		tmp = new char[j + 1];
+		int k = 0;
+		for(k = 0; k < j; ++k){
+			tmp[k] = str[k + i];
+		}
+		tmp[k] = 0;
+		return tmp;
+	}
+	MyString & operator=(const MyString & s){
+		if(str) 
+			delete[] str;
+		if(s.str){
+			str = new char[strlen(s.str) + 1];
+			strcpy(str,s.str);
+		}
+		else{
+			str = new char[1];
+			str[0] = '\0';
+		}
+		return *this;
+	}
+	int operator>(const MyString & s){
+		if(strcmp(str, s.str) == 1)
+			return 1;
+		else
+			return 0;
+	}
+	int operator<(const MyString & s){
+		if(strcmp(str, s.str) == -1)
+			return 1;
+		else
+			return 0;
+	}
+	int operator==(const MyString & s){
+		if(strcmp(str, s.str) == 0)
+			return 1;
+		else
+			return 0;
+	}
 };
-
 
 int CompareString( const void * e1, const void * e2)
 {
@@ -69,6 +174,7 @@ int CompareString( const void * e1, const void * e2)
 	else if( *s1 > *s2 )
 	return 1;
 }
+
 int main()
 {
 	MyString s1("abcd-"),s2,s3("efgh-"),s4(s1);
