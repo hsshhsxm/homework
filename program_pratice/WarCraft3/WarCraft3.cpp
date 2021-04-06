@@ -12,6 +12,7 @@ string blueWarriorList[] = {"lion","dragon","ninja","iceman","wolf"};
 string waponList[] = {"sword","bomb","arrow"};
 #define MaxWarrior 5
 
+//武士类
 class Warrior{
 public:
     int No;
@@ -59,6 +60,7 @@ class Wolf:public Warrior{
 public:
 };
 
+//红蓝两方的类
 class Tribe{
 public:
     int currentLife;
@@ -75,7 +77,7 @@ public:
     int tribeRunOnce(int i, int No, int listNum);//listNum =0, red; listNum =1, blue
 };
 
-//红方行动一次
+//红方类
 class RedTribe:public Tribe{
 public:
     RedTribe(){}
@@ -99,7 +101,7 @@ public:
     }
 };
 
-//蓝方行动一次
+//蓝方类
 class BlueTribe:public Tribe{
 public:
     BlueTribe(){}
@@ -201,13 +203,15 @@ int Tribe::tribeRunOnce(int i, int No, int listNum){
     return 0;
 }
 
-
+//设定初始生命值等参数，开始运行
 void runBegin(int totalLife, int dragonLife, int ninjaLife, int icemanLife, int lionLife, int wolfLife){
+    //设置初始参数
     RedTribe redTribe(totalLife, dragonLife, ninjaLife, icemanLife, lionLife, wolfLife);
     BlueTribe blueTribe(totalLife, dragonLife, ninjaLife, icemanLife, lionLife, wolfLife);
     int judgeMin[MaxWarrior] = {dragonLife, ninjaLife, icemanLife, lionLife, wolfLife};
     int *min = min_element(judgeMin, judgeMin + 5);
     int i = 0, j = 0, k = 1;//i for red; j for blue
+    //红方运行一次，进行检查
     int red_judge = redTribe.tribeRunOnce(i, k, 0);
     while(red_judge == 1){
         if(redTribe.currentLife >= *min){
@@ -223,6 +227,7 @@ void runBegin(int totalLife, int dragonLife, int ninjaLife, int icemanLife, int 
             redTribe.printFinsih();
         }
     }
+    //蓝方运行一次，进行检查
     int blue_judge = blueTribe.tribeRunOnce(j, k, 1);
     while(blue_judge == 1){
         if(blueTribe.currentLife >= *min){
@@ -239,7 +244,7 @@ void runBegin(int totalLife, int dragonLife, int ninjaLife, int icemanLife, int 
         }
     }
     ++timeCount;
-
+    //双方循环运行
     while((red_judge != -1) || (blue_judge != -1)){
         ++k;
         if(i < 4)
@@ -288,6 +293,7 @@ void runBegin(int totalLife, int dragonLife, int ninjaLife, int icemanLife, int 
     }
 }
 
+//读取数据，传递参数
 void readInput(){
     int caseNum;
     cin >> caseNum;
@@ -307,6 +313,8 @@ void readInput(){
 }
 
 int main(){
+    freopen("datapub.in","r",stdin);
+    freopen("out.out","w",stdout);
     readInput();
     return 0;
 }
