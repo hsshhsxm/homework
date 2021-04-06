@@ -21,14 +21,40 @@ class B {
 		{cout << "B::Fun" << endl; } 
 		B ( int n ) { nBVal = n;} 
 };
-// 在此处补充你的代码
+
+class D:public B{
+private:
+	int nDVal;
+public:
+	D(int n):B(3*n),nDVal(n){};
+	void Fun() {
+		cout << "D::Fun" << endl;
+	}
+	void Print(){
+		B::Print();
+		cout << "nDVal="<< nDVal << endl;
+	}
+};
+
+
 int main() { 
 	B * pb; D * pd; 
-	D d(4); d.Fun(); 
+	D d(4); 
+	//cout << "d.Fun()" << endl;
+	d.Fun(); 
 	pb = new B(2); pd = new D(8); 
-	pb -> Fun(); pd->Fun(); 
-	pb->Print (); pd->Print (); 
-	pb = & d; pb->Fun(); 
+	//cout << "pb -> Fun()" << endl;
+	pb -> Fun(); 
+	//cout << "pd -> Fun()" << endl;
+	pd->Fun(); 
+	//cout << "pb->Print ()" << endl;
+	pb->Print (); 
+	//cout << "pd->Print ()" << endl;
+	pd->Print (); 
+	pb = & d; 
+	//cout << "pb->Fun()" << endl;
+	pb->Fun(); 
+	//cout << "pb->Print()" << endl;
 	pb->Print(); 
 	return 0;
 }

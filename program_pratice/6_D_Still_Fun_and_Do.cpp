@@ -28,7 +28,7 @@ class C:public B {
 	{ cout << "C::Fun" << endl; }
 };
 void Call(
-// 在此处补充你的代码
+A * p
 ) {
 	p->Fun(); p->Do();
 }

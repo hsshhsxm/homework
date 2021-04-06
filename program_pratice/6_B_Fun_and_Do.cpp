@@ -25,9 +25,7 @@ class C:public B {
 	void Fun() 
 	{ cout << "C::Fun" << endl; } 
 }; 
-void Call(
-// 在此处补充你的代码
-) { 
+void Call(B & p) { 
 	p.Fun(); p.Do(); 
 } 
 int main() { 
