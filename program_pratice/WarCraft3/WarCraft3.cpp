@@ -75,7 +75,7 @@ public:
     int loyalty; //for lion
     vector<Wapon> waponOwned;
     virtual void printWarriorInfo(double n){};
-    virtual void goAhead(int cityNo){};
+    virtual void goAhead(){pos++;};
     virtual void snatchWapon(Warrior & antiWarrior, int currentTribe){};
     int attackOnce(int i);//返回武器的攻击力
     int hurtedOnce(int att);//返回剩余生命值
@@ -109,6 +109,10 @@ class Iceman:public Warrior{
 public:
     void printWarriorInfo(double n){
         cout << "It has a " << waponList[waponNo] << endl;
+    }
+    virtual void goAhead(){
+        pos++;
+        life = life - (life / 10);
     }
 };
 
@@ -194,11 +198,11 @@ public:
     virtual void printTribeInfo(){};
     virtual void printAllWarriorInfo(){};
     virtual void printFinsih(){};
-    virtual void warriorGoAhead(){};
     virtual int tribeBornOnce(int i, int No){return 0;};//listNum =0, red; listNum =1, blue
     void lionRunAway(Tribe & RedTribe, Tribe & BlueTribe);
     void wolfSnatchWapon(Tribe & redTribe, Tribe & blueTribe);
     void allFightOnce(Tribe & redTribe, Tribe & blueTribe);
+    void allGoAhead(Tribe & redTribe, Tribe & blueTribe);
 };
 
 //红方类
@@ -258,7 +262,6 @@ public:
         printCurrentTime();
         cout << " red headquarter was taken" <<endl;
     }
-    virtual void warriorGoAhead();
 };
 
 //蓝方类
@@ -318,7 +321,6 @@ public:
         printCurrentTime();
         cout << " red headquarter was taken" <<endl;
     }
-    virtual void warriorGoAhead();
 };
 
 
@@ -355,12 +357,11 @@ void runBegin(int totalLife, int cityNum, int loyaltyMinus, int totalTime, int d
         }
         if(timeMinCount == 10)//在每个小时的第10分：所有的武士朝敌人司令部方向前进一步。即从己方司令部走到相邻城市，或从一个城市走到下一个城市。或从和敌军司令部相邻的城市到达敌军司令部
         {
-            redTribe.warriorGoAhead();
-            blueTribe.warriorGoAhead();
+            redTribe.allGoAhead(redTribe,blueTribe);
             if(redTribe.cityArray[cityNum + 1] == 1)
-                blueTribe.printFinsih();
+                break;
             if(blueTribe.cityArray[0] == 1)
-                redTribe.printFinsih();
+                break;
         }
         if(timeMinCount == 35)//在每个小时的第35分：在有wolf及其敌人的城市，wolf要抢夺对方的武器
         {
@@ -368,7 +369,7 @@ void runBegin(int totalLife, int cityNum, int loyaltyMinus, int totalTime, int d
         }
         if(timeMinCount == 40)//在每个小时的第40分：在有两个武士的城市，会发生战斗
         {
-
+            redTribe.allFightOnce(redTribe,blueTribe);
         }
         if(timeMinCount == 50)//在每个小时的第50分，司令部报告它拥有的生命元数量
         {
@@ -463,6 +464,7 @@ int RedTribe::tribeBornOnce(int i, int No){
         iceman.life = icemanLife;
         iceman.attack = icemanAttack;
         iceman.pos = 0;
+        cityArray[0] = 1;
         iceman.waponNo = iceman.No % 3;
         if(No % 3 == 0){
             Sword sword(0, iceman.attack/5, 1);
@@ -490,6 +492,7 @@ int RedTribe::tribeBornOnce(int i, int No){
         lion.life = lionLife;
         lion.attack = lionAttack;
         lion.pos = 0;
+        cityArray[0] = 1;
         lion.loyalty = currentLife;
         lion.waponNo = lion.No % 3;
         if(No % 3 == 0){
@@ -519,6 +522,7 @@ int RedTribe::tribeBornOnce(int i, int No){
         wolf.life = wolfLife;
         wolf.attack = wolfAttack;
         wolf.pos = 0;
+        cityArray[0] = 1;
         wolfList.push_back(wolf);
         warriorList.push_back(wolf);
         printBornInfo(wolf);
@@ -533,6 +537,7 @@ int RedTribe::tribeBornOnce(int i, int No){
         ninja.life = ninjaLife;
         ninja.attack = ninjaAttack;
         ninja.pos = 0;
+        cityArray[0] = 1;
         ninja.waponNo[0] = No%3;
         ninja.waponNo[1] = (No+1)%3;
         if(ninja.waponNo[0] == 0){
@@ -571,6 +576,7 @@ int RedTribe::tribeBornOnce(int i, int No){
         dragon.life = dragonLife;
         dragon.attack = dragonAttack;
         dragon.pos = 0;
+        cityArray[0] = 1;
         dragon.waponNo = dragon.No % 3;
         if(No % 3 == 0){
             Sword sword(0, dragon.attack/5, 1);
@@ -607,6 +613,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         iceman.life = icemanLife;
         iceman.attack = icemanAttack;
         iceman.pos = cityNum + 1;
+        cityArray[cityNum + 1] = 1;
         iceman.waponNo = iceman.No % 3;
         if(No % 3 == 0){
             Sword sword(0, iceman.attack/5, 1);
@@ -634,6 +641,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         lion.life = lionLife;
         lion.attack = lionAttack;
         lion.pos = cityNum + 1;
+        cityArray[cityNum + 1] = 1;
         lion.loyalty = currentLife;
         lion.waponNo = lion.No % 3;
         if(No % 3 == 0){
@@ -663,6 +671,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         wolf.life = wolfLife;
         wolf.attack = wolfAttack;
         wolf.pos = cityNum + 1;
+        cityArray[cityNum + 1] = 1;
         wolfList.push_back(wolf);
         warriorList.push_back(wolf);
         printBornInfo(wolf);
@@ -677,6 +686,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         ninja.life = ninjaLife;
         ninja.attack = ninjaAttack;
         ninja.pos = cityNum + 1;
+        cityArray[cityNum + 1] = 1;
         ninja.waponNo[0] = No%3;
         ninja.waponNo[1] = (No+1)%3;
         if(ninja.waponNo[0] == 0){
@@ -715,6 +725,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         dragon.life = dragonLife;
         dragon.attack = dragonAttack;
         dragon.pos = cityNum + 1;
+        cityArray[cityNum + 1] = 1;
         dragon.waponNo = dragon.No % 3;
         if(No % 3 == 0){
             Sword sword(0, dragon.attack/5, 1);
@@ -738,44 +749,8 @@ int BlueTribe::tribeBornOnce(int i, int No){
     return 0;
 }
 
-void RedTribe::warriorGoAhead(){
-    for(int i = 0; i < warriorList.size(); ++i){
-        if(warriorList[i].pos == cityNum + 1)//如果已到达敌方司令部
-            break;
-        if(warriorList[i].pos + 1 == 1)//如果前一位有己方人员，不前进
-            continue;
-        if(warriorList[i].name == "lion")
-            warriorList[i].loyalty -= loyaltyMinus;
-
-        cityArray[warriorList[i].pos] = 0;
-        warriorList[i].pos++;
-        cityArray[warriorList[i].pos] = 1;
-
-        if(warriorList[i].pos != cityNum + 1)
-            printGoAheadInfo(warriorList[i]);
-    }
-}
-
-void BlueTribe::warriorGoAhead(){
-    for(int i = 0; i < warriorList.size(); ++i){
-        if(warriorList[i].pos == 0)//如果已到达敌方司令部
-            break;
-        if(cityArray[warriorList[i].pos - 1] == 1)//如果前一位有己方人员，不前进
-            continue;
-        if(warriorList[i].name == "lion")
-            warriorList[i].loyalty -= loyaltyMinus;
-
-        cityArray[warriorList[i].pos] = 0;
-        warriorList[i].pos--;
-        cityArray[warriorList[i].pos] = 1;
-
-        if(warriorList[i].pos != 0)
-            printGoAheadInfo(warriorList[i]);    
-    }
-}
-
 void Tribe::lionRunAway(Tribe & redTribe, Tribe & blueTribe){
-    for(int i = 0; i < cityNum + 1; ++i){
+    for(int i = 0; i < cityNum + 2; ++i){
         if(redTribe.cityArray[i] == 1){
             int j = 0;
             for(j = 0; j < redTribe.warriorList.size(); ++j){
@@ -824,6 +799,51 @@ void Tribe::wolfSnatchWapon(Tribe & redTribe, Tribe & blueTribe){
             if(redTribe.warriorList[j].name != "wolf" && blueTribe.warriorList[k].name == "wolf"){
                     blueTribe.warriorList[k].snatchWapon(redTribe.warriorList[j],1);
             }
+        }
+    }
+}
+
+void Tribe::allGoAhead(Tribe & redTribe, Tribe & blueTribe){
+    for(int i = 0; i < cityNum + 2; ++i){
+        if(redTribe.cityArray[i] == 1){
+            int j = 0;
+            for(j = 0; j < redTribe.warriorList.size(); ++j){
+                if(redTribe.warriorList[j].pos == i)
+                    break;
+            }
+            if(redTribe.warriorList[j].pos == cityNum + 1)//如果已到达敌方司令部
+                break;
+            if(redTribe.warriorList[j].name == "lion")
+                redTribe.warriorList[j].loyalty -= redTribe.loyaltyMinus;
+            if(redTribe.warriorList[j].name == "iceman")
+                redTribe.warriorList[j].life = redTribe.warriorList[j].life - (redTribe.warriorList[j].life / 10);
+            redTribe.cityArray[redTribe.warriorList[j].pos] = 0;
+            redTribe.warriorList[j].pos++;
+            redTribe.cityArray[redTribe.warriorList[j].pos] = 1;
+            if(redTribe.warriorList[j].pos != cityNum + 1)
+                redTribe.printGoAheadInfo(redTribe.warriorList[j]);
+            if(redTribe.warriorList[j].pos == cityNum + 1)
+                blueTribe.printFinsih();
+        }
+        if(blueTribe.cityArray[i] == 1){
+            int j = 0;
+            for(j = 0; j < blueTribe.warriorList.size(); ++j){
+                if(blueTribe.warriorList[j].pos == i)
+                    break;
+            }
+            if(blueTribe.warriorList[j].pos == 0)//如果已到达敌方司令部
+                break;
+            if(blueTribe.warriorList[j].name == "lion")
+                blueTribe.warriorList[j].loyalty -= blueTribe.loyaltyMinus;
+            if(blueTribe.warriorList[j].name == "iceman")
+                blueTribe.warriorList[j].life = blueTribe.warriorList[j].life - (blueTribe.warriorList[j].life / 10);
+            blueTribe.cityArray[blueTribe.warriorList[j].pos] = 0;
+            blueTribe.warriorList[j].pos--;
+            blueTribe.cityArray[blueTribe.warriorList[j].pos] = 1;
+            if(blueTribe.warriorList[j].pos != 0)
+                blueTribe.printGoAheadInfo(blueTribe.warriorList[j]);
+            if(blueTribe.warriorList[j].pos == 0)
+                redTribe.printFinsih();
         }
     }
 }
