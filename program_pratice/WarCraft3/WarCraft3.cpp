@@ -122,7 +122,7 @@ public:
 class Lion:public Warrior{
 public:
     void printWarriorInfo(double n){
-        cout << "It's loyalty is " << loyalty << endl;
+        cout << "Its loyalty is " << loyalty << endl;
     }
     void printLionRun(string redOrBlue,Warrior & currentWarrior){
     }
@@ -245,20 +245,28 @@ public:
         cout << " " << currentLife << " elements in red headquarter" << endl;
     }
     virtual void printAllWarriorInfo(){
-        for(int i = 0; i < warriorList.size(); ++i){
-            int swNum=0,boNum=0,arNum=0;
-            for(int j = 0; j < warriorList[i].waponOwned.size(); ++j){
-                if(warriorList[i].waponOwned[j].No == 0)
-                    ++swNum;
-                else if(warriorList[i].waponOwned[j].No == 1)
-                    ++boNum;
-                else if(warriorList[i].waponOwned[j].No == 2)
-                    ++arNum;
+        for(int k = 0; k < cityNum + 2; ++k){
+            if(cityArray[k] == 1){
+                int i = 0;
+                for(i = 0; i < warriorList.size(); ++i){
+                    //cout << warriorList[i].name << endl;
+                    if(warriorList[i].pos == k)
+                        break;
+                }
+                int swNum=0,boNum=0,arNum=0;
+                for(int j = 0; j < warriorList[i].waponOwned.size(); ++j){
+                    if(warriorList[i].waponOwned[j].No == 0)
+                        ++swNum;
+                    else if(warriorList[i].waponOwned[j].No == 1)
+                        ++boNum;
+                    else if(warriorList[i].waponOwned[j].No == 2)
+                        ++arNum;
+                }
+                printCurrentTime();
+                cout << " " << "red " <<  warriorList[i].name << " " << warriorList[i].No
+                << " has " << swNum << " sword " << boNum << " bomb " << arNum << " arrow and " 
+                << warriorList[i].life << " elements" << endl;
             }
-        printCurrentTime();
-        cout << " " << "red " <<  warriorList[i].name 
-        << " has " << swNum << " sword " << boNum << " bomb " << arNum << " arrow and " 
-        << warriorList[i].life << " elements" << endl;
         }
     }
     virtual void printFinsih(){
@@ -304,20 +312,28 @@ public:
         cout << " " << currentLife << " elements in blue headquarter" << endl;
     }
     virtual void printAllWarriorInfo(){
-        for(int i = 0; i < warriorList.size(); ++i){
-            int swNum=0,boNum=0,arNum=0;
-            for(int j = 0; j < warriorList[i].waponOwned.size(); ++j){
-                if(warriorList[i].waponOwned[j].No == 0)
-                    ++swNum;
-                else if(warriorList[i].waponOwned[j].No == 1)
-                    ++boNum;
-                else if(warriorList[i].waponOwned[j].No == 2)
-                    ++arNum;
+        for(int k = 0; k < cityNum + 2; ++k){
+            if(cityArray[k] == 1){
+                int i = 0;
+                for(i = 0; i < warriorList.size(); ++i){
+                    if(warriorList[i].pos == k)
+                        break;
+                }
+                //cout << warriorList[i].name << endl;
+                int swNum=0,boNum=0,arNum=0;
+                for(int j = 0; j < warriorList[i].waponOwned.size(); ++j){
+                    if(warriorList[i].waponOwned[j].No == 0)
+                        ++swNum;
+                    else if(warriorList[i].waponOwned[j].No == 1)
+                        ++boNum;
+                    else if(warriorList[i].waponOwned[j].No == 2)
+                        ++arNum;
+                }
+                printCurrentTime();
+                cout << " " << "blue " <<  warriorList[i].name << " " << warriorList[i].No
+                << " has " << swNum << " sword " << boNum << " bomb " << arNum << " arrow and " 
+                << warriorList[i].life << " elements" << endl;
             }
-        printCurrentTime();
-        cout << " " << "blue " <<  warriorList[i].name 
-        << " has " << swNum << " sword " << boNum << " bomb " << arNum << " arrow and " 
-        << warriorList[i].life << " elements" << endl;
         }
     }
     virtual void printFinsih(){
@@ -431,7 +447,7 @@ void readInput(){
 }
 
 int main(){
-    freopen("in.in","r",stdin);
+    freopen("datapub.in","r",stdin);
     freopen("out.out","w",stdout);
     readInput();
     return 0;
@@ -844,56 +860,10 @@ void Tribe::wolfSnatchWapon(Tribe & redTribe, Tribe & blueTribe){
 }
 
 void Tribe::allGoAhead(Tribe & redTribe, Tribe & blueTribe){
-    for(int i = cityNum + 1; i >= 0; --i){
-        if(redTribe.cityArray[i] == 1){
-            int j = 0;
-            for(j = 0; j < redTribe.warriorList.size(); ++j){
-                if(redTribe.warriorList[j].pos == i)
-                    break;
-            }
-            if(redTribe.warriorList[j].pos == cityNum + 1)//如果已到达敌方司令部
-                break;
-            if(redTribe.warriorList[j].name == "lion")
-                redTribe.warriorList[j].loyalty -= redTribe.loyaltyMinus;
-            if(redTribe.warriorList[j].name == "iceman")
-                redTribe.warriorList[j].life = redTribe.warriorList[j].life - (redTribe.warriorList[j].life / 10);
-            redTribe.cityArray[redTribe.warriorList[j].pos] = 0;
-            redTribe.warriorList[j].pos++;
-            redTribe.warriorList[j].posChanged = 1;
-            redTribe.cityArray[redTribe.warriorList[j].pos] = 1;
-            /*
-            if(redTribe.warriorList[j].pos != cityNum + 1)
-                redTribe.printGoAheadInfo(redTribe.warriorList[j]);
-            if(redTribe.warriorList[j].pos == cityNum + 1)
-                blueTribe.printFinsih();
-            */
-        }
-    }
-    for(int i = 0; i < cityNum + 2; ++i){
-        if(blueTribe.cityArray[i] == 1){
-            int j = 0;
-            for(j = 0; j < blueTribe.warriorList.size(); ++j){
-                if(blueTribe.warriorList[j].pos == i)
-                    break;
-            }
-            if(blueTribe.warriorList[j].pos == 0)//如果已到达敌方司令部
-                break;
-            if(blueTribe.warriorList[j].name == "lion")
-                blueTribe.warriorList[j].loyalty -= blueTribe.loyaltyMinus;
-            if(blueTribe.warriorList[j].name == "iceman")
-                blueTribe.warriorList[j].life = blueTribe.warriorList[j].life - (blueTribe.warriorList[j].life / 10);
-            blueTribe.cityArray[blueTribe.warriorList[j].pos] = 0;
-            blueTribe.warriorList[j].pos--;
-            blueTribe.warriorList[j].posChanged = 1;
-            blueTribe.cityArray[blueTribe.warriorList[j].pos] = 1;
-            /*
-            if(blueTribe.warriorList[j].pos != 0)
-                blueTribe.printGoAheadInfo(blueTribe.warriorList[j]);
-            if(blueTribe.warriorList[j].pos == 0)
-                redTribe.printFinsih(); 
-            */
-        }
-    }
+    for(int i = 0; i < redTribe.warriorList.size(); ++i)
+        redTribe.warriorList[i].posChanged = 0;
+    for(int i = 0; i < blueTribe.warriorList.size(); ++i)
+        blueTribe.warriorList[i].posChanged = 0;
 
     for(int i = 0; i < cityNum + 2; ++i){
         if(redTribe.cityArray[i] == 1){
@@ -902,13 +872,22 @@ void Tribe::allGoAhead(Tribe & redTribe, Tribe & blueTribe){
                 if(redTribe.warriorList[j].pos == i)
                     break;
             }
-            if(redTribe.warriorList[j].posChanged == 1){
-                redTribe.warriorList[j].posChanged = 0;
-                if(redTribe.warriorList[j].pos < cityNum + 1)
-                    redTribe.printGoAheadInfo(redTribe.warriorList[j]);
-                else
-                    blueTribe.printFinsih();
-            }   
+            if(redTribe.warriorList[j].pos == cityNum + 1)//如果已到达敌方司令部
+                break;
+            if(redTribe.warriorList[j].posChanged == 1)
+                continue;
+            if(redTribe.warriorList[j].name == "lion")
+                redTribe.warriorList[j].loyalty -= redTribe.loyaltyMinus;
+            if(redTribe.warriorList[j].name == "iceman")
+                redTribe.warriorList[j].life = redTribe.warriorList[j].life - (redTribe.warriorList[j].life / 10);
+            redTribe.cityArray[redTribe.warriorList[j].pos] = 0;
+            redTribe.warriorList[j].pos++;
+            redTribe.cityArray[redTribe.warriorList[j].pos] = 1;
+            redTribe.warriorList[j].posChanged = 1;
+            if(redTribe.warriorList[j].pos != cityNum + 1)
+                redTribe.printGoAheadInfo(redTribe.warriorList[j]);
+            if(redTribe.warriorList[j].pos == cityNum + 1)
+                blueTribe.printFinsih();
         }
         if(blueTribe.cityArray[i] == 1){
             int j = 0;
@@ -916,14 +895,22 @@ void Tribe::allGoAhead(Tribe & redTribe, Tribe & blueTribe){
                 if(blueTribe.warriorList[j].pos == i)
                     break;
             }
-            if(blueTribe.warriorList[j].posChanged == 1){
-                blueTribe.warriorList[j].posChanged = 0;
-                //cout << blueTribe.warriorList[i].pos << endl;
-                if(blueTribe.warriorList[j].pos > 0)
-                    blueTribe.printGoAheadInfo(blueTribe.warriorList[j]);
-                else 
-                    redTribe.printFinsih();
-        }
+            if(blueTribe.warriorList[j].pos == 0)//如果已到达敌方司令部
+                break;
+            if(blueTribe.warriorList[j].posChanged == 1)
+                continue;
+            if(blueTribe.warriorList[j].name == "lion")
+                blueTribe.warriorList[j].loyalty -= blueTribe.loyaltyMinus;
+            if(blueTribe.warriorList[j].name == "iceman")
+                blueTribe.warriorList[j].life = blueTribe.warriorList[j].life - (blueTribe.warriorList[j].life / 10);
+            blueTribe.cityArray[blueTribe.warriorList[j].pos] = 0;
+            blueTribe.warriorList[j].pos--;
+            blueTribe.cityArray[blueTribe.warriorList[j].pos] = 1;
+            blueTribe.warriorList[j].posChanged = 1;
+            if(blueTribe.warriorList[j].pos != 0)
+                blueTribe.printGoAheadInfo(blueTribe.warriorList[j]);
+            if(blueTribe.warriorList[j].pos == 0)
+                redTribe.printFinsih();
         }
     }
 }
