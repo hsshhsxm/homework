@@ -34,13 +34,13 @@ public:
 
 class Sword:public Wapon{
 public:
-    Sword(int n,int a, int d = 1):Wapon(n,a,d){}
+    Sword(int n,int a, int d = 1):Wapon(0,a,d){}
     int usedOnce(){return 1;};
 };
 
 class Bomb:public Wapon{
 public:
-    Bomb(int n,int a, int d = 1):Wapon(n,a,d){attackSelf = a/2;}
+    Bomb(int n,int a, int d):Wapon(1,a,d){attackSelf = a/2;}
     int usedOnce(){
         --durability;
         return durability;
@@ -49,7 +49,7 @@ public:
 
 class Arrow:public Wapon{
 public:
-    Arrow(int n,int a, int d = 2):Wapon(n,a,d){}
+    Arrow(int n,int a, int d = 2):Wapon(2,a,d){}
     int usedOnce(){
         --durability;
         return durability;
@@ -78,7 +78,7 @@ public:
     vector<Wapon> waponOwned;
     virtual void printWarriorInfo(double n){};
     virtual void goAhead(){pos++;};
-    virtual void wolfSnatchWapon(Warrior & antiWarrior, int currentTribe){};
+    void wolfSnatchWapon(Warrior & antiWarrior, int currentTribe);
     int attackOnce(int i);//返回武器的攻击力
     int hurtedOnce(int att);//返回剩余生命值
     void snatchWapon(Warrior & antiWarrior);
@@ -130,54 +130,6 @@ public:
 
 class Wolf:public Warrior{
 public:
-    virtual void wolfSnatchWapon(Warrior & antiWarrior, int currentTribe){
-        string twoTribe[] = {"red", "blue"};
-        if(antiWarrior.name == "wolf")
-            return;
-        int minWaponNo = antiWarrior.waponOwned.end()->No;
-        if(minWaponNo != 2)//如果对方最小的武器不是arrow，直接抢即可
-        {
-            
-            int tmpCount = 0;
-            for(int i = antiWarrior.waponOwned.size() - 1; i >= 0 ; --i){
-                if(antiWarrior.waponOwned[i].No > minWaponNo)
-                    break;
-                if(waponOwned.size() > 10)
-                    break;
-                Wapon tmp(antiWarrior.waponOwned[i].No, antiWarrior.waponOwned[i].attackPower, waponOwned[i].durability);
-                waponOwned.push_back(tmp);
-                ++tmpCount;
-                antiWarrior.waponOwned.pop_back();
-            }
-            if(minWaponNo == 0){
-                printCurrentTime();
-                cout << " "  << twoTribe[currentTribe] << " wolf " <<  No << " took " << tmpCount << " sword from " << twoTribe[1-currentTribe] << " " 
-                << antiWarrior.name << " "<< antiWarrior.No << " in city " << pos << endl;
-            }
-            if(minWaponNo == 1){
-                printCurrentTime();
-                cout << " "  << twoTribe[currentTribe] << " wolf " <<  No << " took " << tmpCount << " bomb from " << twoTribe[1-currentTribe] << " " 
-                << antiWarrior.name << " "<< antiWarrior.No << " in city " << pos << endl;             
-            }
-        }
-        else//如果对方最小的是arrow，先抢没用过的，倒过来抢
-        {
-            int tmpCount = 0;
-            for(int i = 0; i < antiWarrior.waponOwned.size(); ++i){
-                if(waponOwned.size() > 10)
-                    break;
-                Wapon tmp(antiWarrior.waponOwned[i].No, antiWarrior.waponOwned[i].attackPower, waponOwned[i].durability);
-                waponOwned.push_back(tmp);
-                ++tmpCount;
-                antiWarrior.waponOwned.erase(antiWarrior.waponOwned.begin());
-            }
-            cout << " "  << twoTribe[currentTribe] << " wolf " <<  No << " took " << tmpCount << " arrow from " << twoTribe[1-currentTribe] << " " 
-            << antiWarrior.name << " "<< antiWarrior.No << " in city " << pos << endl; 
-            
-        }
-        //对抢到的武器进行排序
-        sort(waponOwned.begin(), waponOwned.end(), sortFun);
-    }
 };
 
 //红蓝两方的类
@@ -206,6 +158,7 @@ public:
     void wolfSnatchWapon(Tribe & redTribe, Tribe & blueTribe);
     void allFightOnce(Tribe & redTribe, Tribe & blueTribe);
     void allGoAhead(Tribe & redTribe, Tribe & blueTribe);
+    void printAllWarriorInfo(Tribe & redTribe, Tribe & blueTribe);
 };
 
 //红方类
@@ -243,31 +196,6 @@ public:
     virtual void printTribeInfo(){
         printCurrentTime();
         cout << " " << currentLife << " elements in red headquarter" << endl;
-    }
-    virtual void printAllWarriorInfo(){
-        for(int k = 0; k < cityNum + 2; ++k){
-            if(cityArray[k] == 1){
-                int i = 0;
-                for(i = 0; i < warriorList.size(); ++i){
-                    //cout << warriorList[i].name << endl;
-                    if(warriorList[i].pos == k)
-                        break;
-                }
-                int swNum=0,boNum=0,arNum=0;
-                for(int j = 0; j < warriorList[i].waponOwned.size(); ++j){
-                    if(warriorList[i].waponOwned[j].No == 0)
-                        ++swNum;
-                    else if(warriorList[i].waponOwned[j].No == 1)
-                        ++boNum;
-                    else if(warriorList[i].waponOwned[j].No == 2)
-                        ++arNum;
-                }
-                printCurrentTime();
-                cout << " " << "red " <<  warriorList[i].name << " " << warriorList[i].No
-                << " has " << swNum << " sword " << boNum << " bomb " << arNum << " arrow and " 
-                << warriorList[i].life << " elements" << endl;
-            }
-        }
     }
     virtual void printFinsih(){
         printCurrentTime();
@@ -310,31 +238,6 @@ public:
     virtual void printTribeInfo(){
         printCurrentTime();
         cout << " " << currentLife << " elements in blue headquarter" << endl;
-    }
-    virtual void printAllWarriorInfo(){
-        for(int k = 0; k < cityNum + 2; ++k){
-            if(cityArray[k] == 1){
-                int i = 0;
-                for(i = 0; i < warriorList.size(); ++i){
-                    if(warriorList[i].pos == k)
-                        break;
-                }
-                //cout << warriorList[i].name << endl;
-                int swNum=0,boNum=0,arNum=0;
-                for(int j = 0; j < warriorList[i].waponOwned.size(); ++j){
-                    if(warriorList[i].waponOwned[j].No == 0)
-                        ++swNum;
-                    else if(warriorList[i].waponOwned[j].No == 1)
-                        ++boNum;
-                    else if(warriorList[i].waponOwned[j].No == 2)
-                        ++arNum;
-                }
-                printCurrentTime();
-                cout << " " << "blue " <<  warriorList[i].name << " " << warriorList[i].No
-                << " has " << swNum << " sword " << boNum << " bomb " << arNum << " arrow and " 
-                << warriorList[i].life << " elements" << endl;
-            }
-        }
     }
     virtual void printFinsih(){
         printCurrentTime();
@@ -397,8 +300,7 @@ void runBegin(int totalLife, int cityNum, int loyaltyMinus, int totalTime, int d
         }
         if(timeMinCount == 55)//在每个小时的第55分，每个武士报告其拥有的武器情况
         {
-            redTribe.printAllWarriorInfo();
-            blueTribe.printAllWarriorInfo();
+            redTribe.printAllWarriorInfo(redTribe,blueTribe);
         }
         //时间计数
         timeMinCount += 5;
@@ -437,7 +339,7 @@ void readInput(){
         }
     }
     for(int i = 0; i < caseNum; ++i){
-        cout << "Case:" << i + 1 << endl;
+        cout << "Case " << i + 1 << ":"<< endl;
         runBegin(allTotalLife[i], cityNum[i], loyaltyMinus[i] , totalTime[i] , 
         allLife[i][0], allLife[i][1], allLife[i][2], allLife[i][3], allLife[i][4],
         allAttack[i][0],allAttack[i][1],allAttack[i][2],allAttack[i][3],allAttack[i][4]);
@@ -453,15 +355,34 @@ int main(){
     return 0;
 }
 
+//武器的攻击力
 
 int Warrior::attackOnce(int i)
 {
-    int att = waponOwned[i].attackPower;
-    if(waponOwned[i].No == 1){
-        life -= waponOwned[i].attackSelf;
+    int att;
+    if(waponOwned[i].No == 0){
+        waponOwned[i].durability = 1;
+        waponOwned[i].attackPower = attack / 5;
     }
-    waponOwned[i].usedOnce();
-    if(waponOwned[i].durability == 0){
+    if(waponOwned[i].No == 1 && name != "ninja"){
+        waponOwned[i].attackPower = attack * 2 / 5;
+        waponOwned[i].attackSelf = waponOwned[i].attackPower / 2;
+        life -= waponOwned[i].attackSelf;
+        waponOwned[i].durability--;
+    }
+    if(waponOwned[i].No == 1 && name == "ninja"){
+        waponOwned[i].attackPower = attack * 2 / 5;
+        waponOwned[i].attackSelf = waponOwned[i].attackPower / 2;
+        waponOwned[i].durability--;
+    }
+    if(waponOwned[i].No == 2){
+        waponOwned[i].attackPower = attack * 3 / 10;
+        waponOwned[i].durability--;
+    }
+    att = waponOwned[i].attackPower;
+    //cout << name << " " << No <<" use " << waponOwned[i].No <<" attackOnce" << endl;
+    //cout << "left durability " << waponOwned[i].durability << endl;
+    if(waponOwned[i].durability <= 0){
         waponOwned.erase(waponOwned.begin() + i);
     }
     return att;
@@ -469,15 +390,22 @@ int Warrior::attackOnce(int i)
 
 int Warrior::hurtedOnce(int att){
     life -= att; 
+    //cout << name << " " << No <<" left life " << life << endl;
     return life;
 }
 
 void Warrior::snatchWapon(Warrior & antiWarrior){
-    int minWaponNo = antiWarrior.waponOwned.end()->No;
+    sort(antiWarrior.waponOwned.begin(), antiWarrior.waponOwned.end(), sortFun);
+    int minWaponNo = antiWarrior.waponOwned.back().No;
+    //for(int i = antiWarrior.waponOwned.size() - 1; i >= 0 ; --i){
+    //    cout << "anti's wapon: " << waponList[antiWarrior.waponOwned[i].No] << endl;
+    //}
     if(minWaponNo < 2){
         //snatch sword and bomb
+        //cout << "used" <<antiWarrior.waponOwned.back().No << endl;
         for(int i = antiWarrior.waponOwned.size() - 1; i >= 0 ; --i){
-            if(antiWarrior.waponOwned.end()->No == 2)
+            //cout << "used" <<antiWarrior.waponOwned.back().No << endl;
+            if(antiWarrior.waponOwned.back().No == 2)
                 break;
             if(waponOwned.size() > 10)
                 break;
@@ -486,8 +414,11 @@ void Warrior::snatchWapon(Warrior & antiWarrior){
             antiWarrior.waponOwned.pop_back();
         }
         //snatch arrow
-        for(int i = 0; i < antiWarrior.waponOwned.size(); ++i){
+        int i = 0;
+        while(1){
             if(waponOwned.size() > 10)
+                break;
+            if(antiWarrior.waponOwned.size() == 0)
                 break;
             Wapon tmp(antiWarrior.waponOwned[i].No, antiWarrior.waponOwned[i].attackPower, waponOwned[i].durability);
             waponOwned.push_back(tmp);
@@ -496,14 +427,71 @@ void Warrior::snatchWapon(Warrior & antiWarrior){
     }
     else if(minWaponNo == 2){
         //snatch arrow
-        for(int i = 0; i < antiWarrior.waponOwned.size(); ++i){
+        int i = 0;
+        while(1){
             if(waponOwned.size() > 10)
+                break;
+            if(antiWarrior.waponOwned.size() == 0)
                 break;
             Wapon tmp(antiWarrior.waponOwned[i].No, antiWarrior.waponOwned[i].attackPower, waponOwned[i].durability);
             waponOwned.push_back(tmp);
             antiWarrior.waponOwned.erase(antiWarrior.waponOwned.begin());
         }
     }
+}
+
+void Warrior::wolfSnatchWapon(Warrior & antiWarrior, int currentTribe){
+    sort(antiWarrior.waponOwned.begin(), antiWarrior.waponOwned.end(), sortFun);
+    string twoTribe[] = {"red", "blue"};
+    if(antiWarrior.name == "wolf")
+        return;
+    int minWaponNo = antiWarrior.waponOwned.back().No;
+    if(minWaponNo != 2)//如果对方最小的武器不是arrow，直接抢即可
+    {
+        
+        int tmpCount = 0;
+        for(int i = antiWarrior.waponOwned.size() - 1; i >= 0 ; --i){
+            if(antiWarrior.waponOwned[i].No > minWaponNo)
+                break;
+            if(waponOwned.size() > 10)
+                break;
+            Wapon tmp(antiWarrior.waponOwned[i].No, antiWarrior.waponOwned[i].attackPower, waponOwned[i].durability);
+            waponOwned.push_back(tmp);
+            ++tmpCount;
+            antiWarrior.waponOwned.pop_back();
+        }
+        if(minWaponNo == 0 && tmpCount != 0){
+            printCurrentTime();
+            cout << " "  << twoTribe[currentTribe] << " wolf " <<  No << " took " << tmpCount << " sword from " << twoTribe[1-currentTribe] << " " 
+            << antiWarrior.name << " "<< antiWarrior.No << " in city " << pos << endl;
+        }
+        if(minWaponNo == 1 && tmpCount != 0){
+            printCurrentTime();
+            cout << " "  << twoTribe[currentTribe] << " wolf " <<  No << " took " << tmpCount << " bomb from " << twoTribe[1-currentTribe] << " " 
+            << antiWarrior.name << " "<< antiWarrior.No << " in city " << pos << endl;             
+        }
+    }
+    else//如果对方最小的是arrow，先抢没用过的，倒过来抢
+    {
+        int tmpCount = 0;
+        int i = 0;
+        while(1){
+            if(waponOwned.size() > 10)
+                break;
+            if(antiWarrior.waponOwned.size() == 0)
+                break;
+            Wapon tmp(antiWarrior.waponOwned[i].No, antiWarrior.waponOwned[i].attackPower, waponOwned[i].durability);
+            waponOwned.push_back(tmp);
+            antiWarrior.waponOwned.erase(antiWarrior.waponOwned.begin());
+            tmpCount++;
+        }
+        if(tmpCount != 0){
+            cout << " "  << twoTribe[currentTribe] << " wolf " <<  No << " took " << tmpCount << " arrow from " << twoTribe[1-currentTribe] << " " 
+            << antiWarrior.name << " "<< antiWarrior.No << " in city " << pos << endl; 
+        }
+    }
+    //对抢到的武器进行排序
+    sort(waponOwned.begin(), waponOwned.end(), sortFun);
 }
 
 //制造一个武士
@@ -805,6 +793,53 @@ int BlueTribe::tribeBornOnce(int i, int No){
     return 0;
 }
 
+void Tribe::printAllWarriorInfo(Tribe & redTribe, Tribe & blueTribe){
+    for(int k = 0; k < cityNum + 2; ++k){
+        if(redTribe.cityArray[k] == 1){
+            int i = 0;
+            for(i = 0; i < redTribe.warriorList.size(); ++i){
+                //cout << warriorList[i].name << endl;
+                if(redTribe.warriorList[i].pos == k)
+                    break;
+            }
+            int swNum=0,boNum=0,arNum=0;
+            for(int j = 0; j < redTribe.warriorList[i].waponOwned.size(); ++j){
+                if(redTribe.warriorList[i].waponOwned[j].No == 0)
+                    ++swNum;
+                else if(redTribe.warriorList[i].waponOwned[j].No == 1)
+                    ++boNum;
+                else if(redTribe.warriorList[i].waponOwned[j].No == 2)
+                    ++arNum;
+            }
+            printCurrentTime();
+            cout << " " << "red " <<  redTribe.warriorList[i].name << " " << redTribe.warriorList[i].No
+            << " has " << swNum << " sword " << boNum << " bomb " << arNum << " arrow and " 
+            << redTribe.warriorList[i].life << " elements" << endl;
+        }
+        if(blueTribe.cityArray[k] == 1){
+            int i = 0;
+            for(i = 0; i < blueTribe.warriorList.size(); ++i){
+                if(blueTribe.warriorList[i].pos == k)
+                    break;
+            }
+            //cout << warriorList[i].name << endl;
+            int swNum=0,boNum=0,arNum=0;
+            for(int j = 0; j < blueTribe.warriorList[i].waponOwned.size(); ++j){
+                if(blueTribe.warriorList[i].waponOwned[j].No == 0)
+                    ++swNum;
+                else if(blueTribe.warriorList[i].waponOwned[j].No == 1)
+                    ++boNum;
+                else if(blueTribe.warriorList[i].waponOwned[j].No == 2)
+                    ++arNum;
+            }
+            printCurrentTime();
+            cout << " " << "blue " <<  blueTribe.warriorList[i].name << " " << blueTribe.warriorList[i].No
+            << " has " << swNum << " sword " << boNum << " bomb " << arNum << " arrow and " 
+            << blueTribe.warriorList[i].life << " elements" << endl;
+        }
+    }
+}
+
 void Tribe::lionRunAway(Tribe & redTribe, Tribe & blueTribe){
     for(int i = 0; i < cityNum + 2; ++i){
         if(redTribe.cityArray[i] == 1){
@@ -947,6 +982,7 @@ void Tribe::allGoAhead(Tribe & redTribe, Tribe & blueTribe){
 void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
     for(int i=0; i < cityNum + 2; ++i){
         if(redTribe.cityArray[i] == 1 && blueTribe.cityArray[i] == 1){
+            //cout << "::fight begin1" << endl;
             int j = 0;//for red
             for(j = 0; j < redTribe.warriorList.size(); ++j){
                 if(redTribe.warriorList[j].pos == i)
@@ -965,21 +1001,37 @@ void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
             int attackJudge = 0;//check whether all wapon attack is 0
             int redWaopnSize = redWarrior.waponOwned.size();
             int blueWaopnSize = blueWarrior.waponOwned.size();
+            //cout << "::fight begin2" << endl;
+            //for(int n = 0; n < redWarrior.waponOwned.size(); ++n){
+            //    cout << "red: " << redWarrior.name << "," << redWarrior.No << ","<< redWarrior.life<< ";" << redWarrior.waponOwned[n].No << "," << redWarrior.waponOwned[n].attackPower <<","<< redWarrior.waponOwned[n].durability << endl;
+            //}
+            //for(int n = 0; n < blueWarrior.waponOwned.size(); ++n){
+            //    cout << "blue: " << blueWarrior.name << ","<< blueWarrior.No << "," << blueWarrior.life <<";" <<blueWarrior.waponOwned[n].No << "," << blueWarrior.waponOwned[n].attackPower <<","<< blueWarrior.waponOwned[n].durability << endl;
+            //}
             if(i % 2 == 1){//奇数,red先
+                //cout << "::fight red first" << endl;
                 //fight begin
                 while(redAlive && blueAlive){
+                    //cout << "::in fight" << endl;
                     //if both have wapon
                     while(redWarrior.waponOwned.size() && blueWarrior.waponOwned.size() && redAlive && blueAlive){
+                        //cout << "::red " << redWarrior.name << " and blue " << blueWarrior.name << " both have wapon" << endl;
                         //use waponOwned[redWarrior.waponOwned.size() - 1 - redWaponCount%redWarrior.waponOwned.size()]
-                        int redAtt = redWarrior.attackOnce(redWarrior.waponOwned[redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size())].No);
+                        //cout << "::red use wapon " << redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size()) << endl;
+                        int redAtt = redWarrior.attackOnce(redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size()));
+                        //cout << redAtt << endl;
                         blueWarrior.hurtedOnce(redAtt);
-                        int blueAtt = blueWarrior.attackOnce(blueWarrior.waponOwned[blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size())].No);
-                        redWarrior.hurtedOnce(blueAtt);
+                        if(blueWarrior.life <= 0){
+                            blueAlive = 0;
+                        }else{
+                            int blueAtt = blueWarrior.attackOnce(blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size()));
+                            redWarrior.hurtedOnce(blueAtt);
+                        }
+                        
                         // judge whether one die
                         if(redWarrior.life <= 0)
                             redAlive = 0;
-                        if(blueWarrior.life <= 0)
-                            blueAlive = 0;
+
                         //if no wapon broken, count++, else count remain unchanged
                         if(redWarrior.waponOwned.size() == redWaopnSize)
                             redWaponCount++;
@@ -1009,7 +1061,8 @@ void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
                     }
                     //if only red has wapon
                     while(redWarrior.waponOwned.size() && !blueWarrior.waponOwned.size() && redAlive && blueAlive){
-                        int redAtt = redWarrior.attackOnce(redWarrior.waponOwned[redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size())].No);
+                        //cout << "::red use wapon " << redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size()) << endl;
+                        int redAtt = redWarrior.attackOnce(redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size()));
                         blueWarrior.hurtedOnce(redAtt);
                         if(redWarrior.life <= 0)
                             redAlive = 0;
@@ -1032,7 +1085,8 @@ void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
                     }
                     // if only blue have wapon
                     while(!redWarrior.waponOwned.size() && blueWarrior.waponOwned.size() && redAlive && blueAlive){
-                        int blueAtt = blueWarrior.attackOnce(blueWarrior.waponOwned[blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size())].No);
+                        //cout << "::blue use wapon " << blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size()) << endl;
+                        int blueAtt = blueWarrior.attackOnce(blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size()));
                         redWarrior.hurtedOnce(blueAtt);
                         if(redWarrior.life <= 0)
                             redAlive = 0;
@@ -1062,17 +1116,22 @@ void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
                 //fight end
             }
             if(i % 2 == 0){//偶数,blue先
+                //cout << "::fight blue first" << endl;
                 while(redAlive && blueAlive){
                     //if both have wapon
                     while(redWarrior.waponOwned.size() && blueWarrior.waponOwned.size() && redAlive && blueAlive){
                         //use waponOwned[redWarrior.waponOwned.size() - 1 - redWaponCount%redWarrior.waponOwned.size()]
-                        int blueAtt = blueWarrior.attackOnce(blueWarrior.waponOwned[blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size())].No);
+                        //cout << "::blue use wapon " << blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size()) << endl;
+                        int blueAtt = blueWarrior.attackOnce(blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size()));
                         redWarrior.hurtedOnce(blueAtt);
-                        int redAtt = redWarrior.attackOnce(redWarrior.waponOwned[redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size())].No);
-                        blueWarrior.hurtedOnce(redAtt);
-                        // judge whether one die
-                        if(redWarrior.life <= 0)
+                        //cout << "left life: " << redWarrior.life << endl;
+                        if(redWarrior.life <= 0){
                             redAlive = 0;
+                        } else{
+                            int redAtt = redWarrior.attackOnce(redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size()));
+                            blueWarrior.hurtedOnce(redAtt);
+                        }
+                        // judge whether one die
                         if(blueWarrior.life <= 0)
                             blueAlive = 0;
                         //if no wapon broken, count++, else count remain unchanged
@@ -1104,7 +1163,8 @@ void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
                     }
                     //if only red has wapon
                     while(redWarrior.waponOwned.size() && !blueWarrior.waponOwned.size() && redAlive && blueAlive){
-                        int redAtt = redWarrior.attackOnce(redWarrior.waponOwned[redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size())].No);
+                        //cout << "::red use wapon " << redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size()) << endl;
+                        int redAtt = redWarrior.attackOnce(redWarrior.waponOwned.size() - 1 - redWaponCount%(redWarrior.waponOwned.size()));
                         blueWarrior.hurtedOnce(redAtt);
                         if(redWarrior.life <= 0)
                             redAlive = 0;
@@ -1127,7 +1187,8 @@ void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
                     }
                     // if only blue have wapon
                     while(!redWarrior.waponOwned.size() && blueWarrior.waponOwned.size() && redAlive && blueAlive){
-                        int blueAtt = blueWarrior.attackOnce(blueWarrior.waponOwned[blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size())].No);
+                        //cout << "::blue use wapon " << blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size()) << endl;
+                        int blueAtt = blueWarrior.attackOnce(blueWarrior.waponOwned.size() - 1 - blueWaponCount%(blueWarrior.waponOwned.size()));
                         redWarrior.hurtedOnce(blueAtt);
                         if(redWarrior.life <= 0)
                             redAlive = 0;
@@ -1175,6 +1236,8 @@ void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
                 cout << " both red " << redWarrior.name << " " << redWarrior.No 
                 << " and blue " << blueWarrior.name << " " << blueWarrior.No 
                 << " died in city " << i << endl;
+                redTribe.cityArray[redWarrior.pos] = 0;
+                blueTribe.cityArray[blueWarrior.pos] = 0;
                 redTribe.warriorList.erase(redTribe.warriorList.begin() + j);
                 blueTribe.warriorList.erase(blueTribe.warriorList.begin() + k);
             }
@@ -1189,6 +1252,7 @@ void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
                 }
                 //red snatch blue wapon
                 redWarrior.snatchWapon(blueWarrior);
+                blueTribe.cityArray[blueWarrior.pos] = 0;
                 blueTribe.warriorList.erase(blueTribe.warriorList.begin() + k);
             }
             else if(redAlive == 0 && blueAlive == 1){
@@ -1202,6 +1266,7 @@ void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
                 }
                 //blue snatch red wapon
                 blueWarrior.snatchWapon(redWarrior);
+                redTribe.cityArray[redWarrior.pos] = 0;
                 redTribe.warriorList.erase(redTribe.warriorList.begin() + j);
             }
         }
