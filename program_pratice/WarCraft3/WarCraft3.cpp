@@ -115,7 +115,7 @@ public:
 class Lion:public Warrior{
 public:
     void printWarriorInfo(double n){
-        cout << "It's loyalty is " << (int)n << endl;
+        cout << "It's loyalty is " << loyalty << endl;
     }
     void printLionRun(string redOrBlue,Warrior & currentWarrior){
     }
@@ -173,7 +173,7 @@ public:
     virtual void printBornInfo(Warrior & currentWarrior){};
     virtual void printGoAheadInfo(Warrior & currentWarrior, int cityNo){};
     virtual void printTribeInfo(){};
-    virtual void printWarriorInfo(){};
+    virtual void printAllWarriorInfo(){};
     virtual void printFinsih(){};
     virtual int tribeBornOnce(int i, int No){return 0;};//listNum =0, red; listNum =1, blue
     int tribeFightOnce(Warrior & currentWarrior, int waponNo, Warrior & antiWarrior);
@@ -226,7 +226,7 @@ public:
         printCurrentTime();
         cout << " " << currentLife << " elements in blue headquarter" << endl;
     }
-    virtual void printWarriorInfo(){
+    virtual void printAllWarriorInfo(){
         for(int i = 0; i < warriorList.size(); ++i){
             int swNum=0,boNum=0,arNum=0;
             for(int j = 0; j < warriorList[i].waponOwned.size(); ++j){
@@ -295,7 +295,7 @@ public:
         printCurrentTime();
         cout << " " << currentLife << " elements in blue headquarter" << endl;
     }
-    virtual void printWarriorInfo(){
+    virtual void printAllWarriorInfo(){
         for(int i = 0; i < warriorList.size(); ++i){
             int swNum=0,boNum=0,arNum=0;
             for(int j = 0; j < warriorList[i].waponOwned.size(); ++j){
@@ -337,16 +337,16 @@ void runBegin(int totalLife, int cityNum, int loyaltyMinus, int totalTime, int d
     int redJudge = redTribe.tribeBornOnce(i,k);
     int blueJudge = blueTribe.tribeBornOnce(j,k);
     timeMinCount += 5;
-    ++k;
+    ++k; ++i; ++j;
 
     while(redJudge != -1 || blueJudge != -1){
         if(timeMinCount == 0)//每个小时的第0分， 双方的司令部中各有一个武士降生
         {
             if(redJudge != -1)
-                redJudge = redTribe.tribeBornOnce(i,k);
+                redJudge = redTribe.tribeBornOnce(i%5,k);
             if(blueJudge != -1)
-                blueJudge = blueTribe.tribeBornOnce(j,k);
-            ++k;
+                blueJudge = blueTribe.tribeBornOnce(j%5,k);
+            ++k; ++i; ++j;
         }
         if(timeMinCount == 5)//在每个小时的第5分，该逃跑的lion就在这一时刻逃跑了
         {
@@ -373,8 +373,8 @@ void runBegin(int totalLife, int cityNum, int loyaltyMinus, int totalTime, int d
         }
         if(timeMinCount == 55)//在每个小时的第55分，每个武士报告其拥有的武器情况
         {
-            redTribe.printWarriorInfo();
-            blueTribe.printWarriorInfo();
+            redTribe.printAllWarriorInfo();
+            blueTribe.printAllWarriorInfo();
         }
         
         //时间计数
@@ -502,6 +502,7 @@ int RedTribe::tribeBornOnce(int i, int No){
         lionList.push_back(lion);
         warriorList.push_back(lion);
         printBornInfo(lion);
+        lion.printWarriorInfo(0);
         //lion.printWarriorInfo(currentLife);
     } else if(redWarriorList[i] == "wolf"){
         if(currentLife < wolfLife){
@@ -601,7 +602,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         iceman.No = No;
         iceman.life = icemanLife;
         iceman.attack = icemanAttack;
-        iceman.pos = 0;
+        iceman.pos = cityNum + 1;
         iceman.waponNo = iceman.No % 3;
         if(No % 3 == 0){
             Sword sword(0, iceman.attack/5, 1);
@@ -628,7 +629,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         lion.No = No;
         lion.life = lionLife;
         lion.attack = lionAttack;
-        lion.pos = 0;
+        lion.pos = cityNum + 1;
         lion.loyalty = currentLife;
         lion.waponNo = lion.No % 3;
         if(No % 3 == 0){
@@ -645,6 +646,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         lionList.push_back(lion);
         warriorList.push_back(lion);
         printBornInfo(lion);
+        lion.printWarriorInfo(0);
         //lion.printWarriorInfo(currentLife);
     } else if(blueWarriorList[i] == "wolf"){
         if(currentLife < wolfLife){
@@ -656,7 +658,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         wolf.No = No;
         wolf.life = wolfLife;
         wolf.attack = wolfAttack;
-        wolf.pos = 0;
+        wolf.pos = cityNum + 1;
         wolfList.push_back(wolf);
         warriorList.push_back(wolf);
         printBornInfo(wolf);
@@ -670,7 +672,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         ninja.No = No;
         ninja.life = ninjaLife;
         ninja.attack = ninjaAttack;
-        ninja.pos = 0;
+        ninja.pos = cityNum + 1;
         ninja.waponNo[0] = No%3;
         ninja.waponNo[1] = (No+1)%3;
         if(ninja.waponNo[0] == 0){
@@ -708,7 +710,7 @@ int BlueTribe::tribeBornOnce(int i, int No){
         dragon.No = No;
         dragon.life = dragonLife;
         dragon.attack = dragonAttack;
-        dragon.pos = 0;
+        dragon.pos = cityNum + 1;
         dragon.waponNo = dragon.No % 3;
         if(No % 3 == 0){
             Sword sword(0, dragon.attack/5, 1);
@@ -738,7 +740,7 @@ int Tribe::tribeFightOnce(Warrior & currentWarrior, int waponNo, Warrior & antiW
     int restLife = antiWarrior.attackedOnce(att);
     if(restLife <= 0){
     }
-
+    return 0;
 }
 
 //tp be finished
