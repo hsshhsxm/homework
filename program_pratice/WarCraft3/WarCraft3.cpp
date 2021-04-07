@@ -865,7 +865,7 @@ void Tribe::allGoAhead(Tribe & redTribe, Tribe & blueTribe){
     for(int i = 0; i < blueTribe.warriorList.size(); ++i)
         blueTribe.warriorList[i].posChanged = 0;
 
-    for(int i = 0; i < cityNum + 2; ++i){
+    for(int i = cityNum + 1; i >=0 ; --i){
         if(redTribe.cityArray[i] == 1){
             int j = 0;
             for(j = 0; j < redTribe.warriorList.size(); ++j){
@@ -884,11 +884,10 @@ void Tribe::allGoAhead(Tribe & redTribe, Tribe & blueTribe){
             redTribe.warriorList[j].pos++;
             redTribe.cityArray[redTribe.warriorList[j].pos] = 1;
             redTribe.warriorList[j].posChanged = 1;
-            if(redTribe.warriorList[j].pos != cityNum + 1)
-                redTribe.printGoAheadInfo(redTribe.warriorList[j]);
-            if(redTribe.warriorList[j].pos == cityNum + 1)
-                blueTribe.printFinsih();
         }
+    }
+
+    for(int i = 0; i < cityNum + 2; ++i){
         if(blueTribe.cityArray[i] == 1){
             int j = 0;
             for(j = 0; j < blueTribe.warriorList.size(); ++j){
@@ -907,6 +906,36 @@ void Tribe::allGoAhead(Tribe & redTribe, Tribe & blueTribe){
             blueTribe.warriorList[j].pos--;
             blueTribe.cityArray[blueTribe.warriorList[j].pos] = 1;
             blueTribe.warriorList[j].posChanged = 1;
+
+        }
+    }
+
+    for(int i = 0; i < cityNum + 2; ++i){
+        if(redTribe.cityArray[i] == 1){
+            int j = 0;
+            for(j = 0; j < redTribe.warriorList.size(); ++j){
+                if(redTribe.warriorList[j].pos == i)
+                    break;
+            }
+            if(redTribe.warriorList[j].pos == cityNum + 1)//如果已到达敌方司令部
+                break;
+            if(redTribe.warriorList[j].posChanged != 1)
+                continue;
+            if(redTribe.warriorList[j].pos != cityNum + 1)
+                redTribe.printGoAheadInfo(redTribe.warriorList[j]);
+            if(redTribe.warriorList[j].pos == cityNum + 1)
+                blueTribe.printFinsih();
+        }
+        if(blueTribe.cityArray[i] == 1){
+            int j = 0;
+            for(j = 0; j < blueTribe.warriorList.size(); ++j){
+                if(blueTribe.warriorList[j].pos == i)
+                    break;
+            }
+            if(blueTribe.warriorList[j].pos == 0)//如果已到达敌方司令部
+                break;
+            if(blueTribe.warriorList[j].posChanged != 1)
+                continue;
             if(blueTribe.warriorList[j].pos != 0)
                 blueTribe.printGoAheadInfo(blueTribe.warriorList[j]);
             if(blueTribe.warriorList[j].pos == 0)
