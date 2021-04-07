@@ -76,9 +76,9 @@ public:
     vector<Wapon> waponOwned;
     virtual void printWarriorInfo(double n){};
     virtual void goAhead(int cityNo){};
-    virtual void snatchWapon(Warrior & currentWarrior, Warrior & antiWarrior,int cityNo){};
+    virtual void snatchWapon(Warrior & antiWarrior, int currentTribe){};
     int attackOnce(int i);//返回武器的攻击力
-    int attackedOnce(int att);//返回剩余生命值
+    int hurtedOnce(int att);//返回剩余生命值
 };
 //dragon 、ninja、iceman、lion、wolf
 class Dragon:public Warrior{
@@ -123,35 +123,53 @@ public:
 
 class Wolf:public Warrior{
 public:
-    void snatchWapon(Warrior & currentWarrior, Warrior & antiWarrior,int cityNo){
+    void snatchWapon(Warrior & antiWarrior, int currentTribe){
+        string twoTribe[] = {"red", "blue"};
         if(antiWarrior.name == "wolf")
             return;
         int minWaponNo = antiWarrior.waponOwned.end()->No;
         if(minWaponNo != 2)//如果对方最小的武器不是arrow，直接抢即可
         {
+            
+            int tmpCount = 0;
             for(int i = antiWarrior.waponOwned.size() - 1; i >= 0 ; --i){
                 if(antiWarrior.waponOwned[i].No > minWaponNo)
                     break;
-                if(currentWarrior.waponOwned.size() > 10)
+                if(waponOwned.size() > 10)
                     break;
                 Wapon tmp(antiWarrior.waponOwned[i].No, antiWarrior.waponOwned[i].attackPower, waponOwned[i].durability);
-                currentWarrior.waponOwned.push_back(tmp);
+                waponOwned.push_back(tmp);
+                ++tmpCount;
                 antiWarrior.waponOwned.pop_back();
+            }
+            if(minWaponNo == 0){
+                printCurrentTime();
+                cout << " "  << twoTribe[currentTribe] << " wolf " <<  No << " took " << tmpCount << " sword from " << twoTribe[1-currentTribe] << " " 
+                << antiWarrior.name << " "<< antiWarrior.No << " in city " << pos << endl;
+            }
+            if(minWaponNo == 1){
+                printCurrentTime();
+                cout << " "  << twoTribe[currentTribe] << " wolf " <<  No << " took " << tmpCount << " bomb from " << twoTribe[1-currentTribe] << " " 
+                << antiWarrior.name << " "<< antiWarrior.No << " in city " << pos << endl;             
             }
         }
         else//如果对方最小的是arrow，先抢没用过的，倒过来抢
         {
+            int tmpCount = 0;
             for(int i = 0; i < antiWarrior.waponOwned.size(); ++i){
-                if(currentWarrior.waponOwned.size() > 10)
+                if(waponOwned.size() > 10)
                     break;
                 Wapon tmp(antiWarrior.waponOwned[i].No, antiWarrior.waponOwned[i].attackPower, waponOwned[i].durability);
-                currentWarrior.waponOwned.push_back(tmp);
-                vector<Wapon>::iterator k = antiWarrior.waponOwned.begin();
-                antiWarrior.waponOwned.erase(k);
+                waponOwned.push_back(tmp);
+                ++tmpCount;
+                antiWarrior.waponOwned.erase(antiWarrior.waponOwned.begin());
             }
+            cout << " "  << twoTribe[currentTribe] << " wolf " <<  No << " took " << tmpCount << " arrow from " << twoTribe[1-currentTribe] << " " 
+            << antiWarrior.name << " "<< antiWarrior.No << " in city " << pos << endl; 
+            
         }
         //对抢到的武器进行排序
-        sort(currentWarrior.waponOwned.begin(), currentWarrior.waponOwned.end(), sortFun);
+        sort(waponOwned.begin(), waponOwned.end(), sortFun);
     }
 };
 
@@ -162,6 +180,7 @@ public:
     int dragonLife, ninjaLife, icemanLife, lionLife, wolfLife;
     int dragonAttack, ninjaAttack, icemanAttack, lionAttack, wolfAttack;
     int cityNum,loyaltyMinus,totalTime;
+    int *cityArray;//代表城市里是否有己方人员
     vector<Dragon> dragonList;
     vector<Ninja> ninjaList;
     vector<Iceman> icemanList;
@@ -171,15 +190,15 @@ public:
     Tribe(){}
     ~Tribe(){}
     virtual void printBornInfo(Warrior & currentWarrior){};
-    virtual void printGoAheadInfo(Warrior & currentWarrior, int cityNo){};
+    virtual void printGoAheadInfo(Warrior & currentWarrior){};
     virtual void printTribeInfo(){};
     virtual void printAllWarriorInfo(){};
     virtual void printFinsih(){};
-    virtual int tribeBornOnce(int i, int No){return 0;};//listNum =0, red; listNum =1, blue
-    int tribeFightOnce(Warrior & currentWarrior, int waponNo, Warrior & antiWarrior);
-    virtual void lionRunAway(){};
     virtual void warriorGoAhead(){};
-    virtual void wolfSnatchWapon(Tribe & antiTribe){};
+    virtual int tribeBornOnce(int i, int No){return 0;};//listNum =0, red; listNum =1, blue
+    void lionRunAway(Tribe & RedTribe, Tribe & BlueTribe);
+    void wolfSnatchWapon(Tribe & redTribe, Tribe & blueTribe);
+    void allFightOnce(Tribe & redTribe, Tribe & blueTribe);
 };
 
 //红方类
@@ -201,30 +220,22 @@ public:
         icemanAttack = ia;
         lionAttack = la;
         wolfAttack = wa;
+        cityArray = new int[cityNum + 2]();
     }
+    ~RedTribe(){delete[] cityArray;}
     virtual int tribeBornOnce(int i, int No);
     virtual void printBornInfo(Warrior & currentWarrior){
         printCurrentTime();
         cout << " red " << currentWarrior.name << " " << currentWarrior.No << " born" << endl;
     }
-    virtual void printGoAheadInfo(Warrior & currentWarrior, int cityNo){
+    virtual void printGoAheadInfo(Warrior & currentWarrior){
         printCurrentTime();
-        cout << " red" << currentWarrior.name << " " << currentWarrior.No << " marched to city " << cityNo 
+        cout << " red " << currentWarrior.name << " " << currentWarrior.No << " marched to city " << currentWarrior.pos 
         << " with " << currentWarrior.life << " elements and force "<< currentWarrior.attack<< endl;
-    }
-    virtual void lionRunAway(){
-        for(int i = 0; i < warriorList.size(); ++i){
-            if(warriorList[i].name == "lion"){
-                if(warriorList[i].loyalty <= 0){
-                    printCurrentTime();
-                    cout << " " << "red" << " lion " << warriorList[i].No << " ran away" << endl;
-                }
-            }
-        }
     }
     virtual void printTribeInfo(){
         printCurrentTime();
-        cout << " " << currentLife << " elements in blue headquarter" << endl;
+        cout << " " << currentLife << " elements in red headquarter" << endl;
     }
     virtual void printAllWarriorInfo(){
         for(int i = 0; i < warriorList.size(); ++i){
@@ -248,7 +259,6 @@ public:
         cout << " red headquarter was taken" <<endl;
     }
     virtual void warriorGoAhead();
-    virtual void wolfSnatchWapon(Tribe & antiTribe);
 };
 
 //蓝方类
@@ -270,26 +280,18 @@ public:
         icemanAttack = ia;
         lionAttack = la;
         wolfAttack = wa;
+        cityArray = new int[cityNum + 2]();
     }
+    ~BlueTribe(){delete[] cityArray;}
     virtual int tribeBornOnce(int i, int No);
     virtual void printBornInfo(Warrior & currentWarrior){
         printCurrentTime();
         cout << " blue " << currentWarrior.name << " " << currentWarrior.No << " born" << endl;
     }
-    virtual void printGoAheadInfo(Warrior & currentWarrior, int cityNo){
+    virtual void printGoAheadInfo(Warrior & currentWarrior){
         printCurrentTime();
-        cout << " blue" << currentWarrior.name << " " << currentWarrior.No << " marched to city " << cityNo 
+        cout << " blue " << currentWarrior.name << " " << currentWarrior.No << " marched to city " << currentWarrior.pos
         << " with " << currentWarrior.life << " elements and force "<< currentWarrior.attack<< endl;
-    }
-    virtual void lionRunAway(){
-        for(int i = 0; i < warriorList.size(); ++i){
-            if(warriorList[i].name == "lion"){
-                if(warriorList[i].loyalty <= 0){
-                    printCurrentTime();
-                    cout << " " << "blue" << " lion " << warriorList[i].No << " ran away" << endl;
-                }
-            }
-        }
     }
     virtual void printTribeInfo(){
         printCurrentTime();
@@ -317,7 +319,6 @@ public:
         cout << " red headquarter was taken" <<endl;
     }
     virtual void warriorGoAhead();
-    virtual void wolfSnatchWapon(Tribe & antiTribe);
 };
 
 
@@ -339,7 +340,7 @@ void runBegin(int totalLife, int cityNum, int loyaltyMinus, int totalTime, int d
     timeMinCount += 5;
     ++k; ++i; ++j;
 
-    while(redJudge != -1 || blueJudge != -1){
+    while(1){
         if(timeMinCount == 0)//每个小时的第0分， 双方的司令部中各有一个武士降生
         {
             if(redJudge != -1)
@@ -350,21 +351,24 @@ void runBegin(int totalLife, int cityNum, int loyaltyMinus, int totalTime, int d
         }
         if(timeMinCount == 5)//在每个小时的第5分，该逃跑的lion就在这一时刻逃跑了
         {
-            redTribe.lionRunAway();
-            blueTribe.lionRunAway();
+            redTribe.lionRunAway(redTribe,blueTribe);
         }
         if(timeMinCount == 10)//在每个小时的第10分：所有的武士朝敌人司令部方向前进一步。即从己方司令部走到相邻城市，或从一个城市走到下一个城市。或从和敌军司令部相邻的城市到达敌军司令部
         {
             redTribe.warriorGoAhead();
             blueTribe.warriorGoAhead();
+            if(redTribe.cityArray[cityNum + 1] == 1)
+                blueTribe.printFinsih();
+            if(blueTribe.cityArray[0] == 1)
+                redTribe.printFinsih();
         }
         if(timeMinCount == 35)//在每个小时的第35分：在有wolf及其敌人的城市，wolf要抢夺对方的武器
         {
-
+            redTribe.wolfSnatchWapon(redTribe,blueTribe);
         }
         if(timeMinCount == 40)//在每个小时的第40分：在有两个武士的城市，会发生战斗
         {
-            
+
         }
         if(timeMinCount == 50)//在每个小时的第50分，司令部报告它拥有的生命元数量
         {
@@ -376,7 +380,6 @@ void runBegin(int totalLife, int cityNum, int loyaltyMinus, int totalTime, int d
             redTribe.printAllWarriorInfo();
             blueTribe.printAllWarriorInfo();
         }
-        
         //时间计数
         timeMinCount += 5;
         if(timeMinCount == 60)
@@ -385,8 +388,10 @@ void runBegin(int totalLife, int cityNum, int loyaltyMinus, int totalTime, int d
             timeMinCount = 0;
         }
         //如果时间耗尽，停止
-        if(timeMinCount + timeHourCount * 60 > totalTime)
+        if(timeMinCount + timeHourCount * 60 > totalTime){
             break;
+        }
+            
     }
     
 
@@ -422,7 +427,7 @@ void readInput(){
 }
 
 int main(){
-    freopen("datapub.in","r",stdin);
+    freopen("in.in","r",stdin);
     freopen("out.out","w",stdout);
     readInput();
     return 0;
@@ -432,15 +437,14 @@ int main(){
 int Warrior::attackOnce(int i)
 {
     int att = waponOwned[i].attackPower;
-    if(waponOwned[i].No != 0)
-        --waponOwned[i].durability;
+    waponOwned[i].usedOnce();
     if(waponOwned[i].durability == 0){
         waponOwned.erase(waponOwned.begin() + i);
     }
     return att;
 }
 
-int Warrior::attackedOnce(int att){
+int Warrior::hurtedOnce(int att){
     life -= att; 
     return life;
 }
@@ -734,46 +738,96 @@ int BlueTribe::tribeBornOnce(int i, int No){
     return 0;
 }
 
-//tp be finished
-int Tribe::tribeFightOnce(Warrior & currentWarrior, int waponNo, Warrior & antiWarrior){
-    int att = currentWarrior.attackOnce(waponNo);
-    int restLife = antiWarrior.attackedOnce(att);
-    if(restLife <= 0){
-    }
-    return 0;
-}
-
-//tp be finished
 void RedTribe::warriorGoAhead(){
     for(int i = 0; i < warriorList.size(); ++i){
-        //判断是否到达敌方司令部
+        if(warriorList[i].pos == cityNum + 1)//如果已到达敌方司令部
+            break;
+        if(warriorList[i].pos + 1 == 1)//如果前一位有己方人员，不前进
+            continue;
+        if(warriorList[i].name == "lion")
+            warriorList[i].loyalty -= loyaltyMinus;
+
+        cityArray[warriorList[i].pos] = 0;
         warriorList[i].pos++;
-        
+        cityArray[warriorList[i].pos] = 1;
+
+        if(warriorList[i].pos != cityNum + 1)
+            printGoAheadInfo(warriorList[i]);
     }
 }
 
-//tp be finished
-void RedTribe::wolfSnatchWapon(Tribe & antiTribe){
-    for(int i = 0; i < warriorList.size(); ++i){
-        if(warriorList[i].name == "wolf"){
-
-        }
-    }
-}
-
-//tp be finished
 void BlueTribe::warriorGoAhead(){
     for(int i = 0; i < warriorList.size(); ++i){
-        //判断是否到达敌方司令部
-        warriorList[i].pos++;
+        if(warriorList[i].pos == 0)//如果已到达敌方司令部
+            break;
+        if(cityArray[warriorList[i].pos - 1] == 1)//如果前一位有己方人员，不前进
+            continue;
+        if(warriorList[i].name == "lion")
+            warriorList[i].loyalty -= loyaltyMinus;
+
+        cityArray[warriorList[i].pos] = 0;
+        warriorList[i].pos--;
+        cityArray[warriorList[i].pos] = 1;
+
+        if(warriorList[i].pos != 0)
+            printGoAheadInfo(warriorList[i]);    
     }
 }
 
-//tp be finished
-void BlueTribe::wolfSnatchWapon(Tribe & antiTribe){
-    for(int i = 0; i < warriorList.size(); ++i){
-        if(warriorList[i].name == "wolf"){
-            
+void Tribe::lionRunAway(Tribe & redTribe, Tribe & blueTribe){
+    for(int i = 0; i < cityNum + 1; ++i){
+        if(redTribe.cityArray[i] == 1){
+            int j = 0;
+            for(j = 0; j < redTribe.warriorList.size(); ++j){
+                if(redTribe.warriorList[j].pos == i)
+                    break;
+            }
+            if(redTribe.warriorList[j].name == "lion" && redTribe.warriorList[j].loyalty <= 0){
+                    printCurrentTime();
+                    cout << " " << "red" << " lion " << redTribe.warriorList[j].No << " ran away" << endl;
+                    redTribe.warriorList.erase(redTribe.warriorList.begin() + j);
+                    redTribe.cityArray[i] = 0;
+            }
+        }
+        if(blueTribe.cityArray[i] == 1 && i != 0){
+            int j = 0;
+            for(j = 0; j < blueTribe.warriorList.size(); ++j){
+                if(blueTribe.warriorList[j].pos == i)
+                    break;
+            }
+            if(blueTribe.warriorList[j].name == "lion" && blueTribe.warriorList[j].loyalty <= 0){
+                    printCurrentTime();
+                    cout << " " << "blue" << " lion " << blueTribe.warriorList[j].No << " ran away" << endl;
+                    blueTribe.warriorList.erase(blueTribe.warriorList.begin() + j);
+                    blueTribe.cityArray[i] = 0;
+            }
         }
     }
+}
+
+void Tribe::wolfSnatchWapon(Tribe & redTribe, Tribe & blueTribe){
+    for(int i = 1; i < cityNum + 1; ++i){
+        if(redTribe.cityArray[i] == 1 && blueTribe.cityArray[i] == 1){
+            int j = 0;//for red
+            for(j = 0; j < redTribe.warriorList.size(); ++j){
+                if(redTribe.warriorList[j].pos == i)
+                    break;
+            }
+            int k = 0;// for blue
+            for(k = 0; k < blueTribe.warriorList.size(); ++k){
+                if(blueTribe.warriorList[k].pos == i)
+                    break;
+            }
+            if(redTribe.warriorList[j].name == "wolf" && blueTribe.warriorList[k].name != "wolf"){
+                    redTribe.warriorList[j].snatchWapon(blueTribe.warriorList[k],0);
+            }
+            if(redTribe.warriorList[j].name != "wolf" && blueTribe.warriorList[k].name == "wolf"){
+                    blueTribe.warriorList[k].snatchWapon(redTribe.warriorList[j],1);
+            }
+        }
+    }
+}
+
+void Tribe::allFightOnce(Tribe & redTribe, Tribe & blueTribe){
+
 }
