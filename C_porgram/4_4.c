@@ -1,8 +1,7 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 int main(){
-	char str[3];
+	char str[4];
 	int a,b,c;
 	for(int i = 100; i < 1000 ; i++){
 		sprintf(str,"%d",i);
@@ -13,6 +12,5 @@ int main(){
 			printf("%d ",i);
 	}
 	printf("\n");
-	
 	return 0;
 }

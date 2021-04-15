@@ -11,6 +11,6 @@ int main(){
 	} else{
 		y = -(5 * x - 24);
 	}
-	printf("y=%d",y);
+	printf("y=%d\n",y);
 	return 0;
 }
