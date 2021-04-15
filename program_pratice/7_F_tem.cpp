@@ -14,8 +14,17 @@
 using namespace std;
 template <class T>  
 class myclass {
-// 在此处补充你的代码
-~myclass( ) {
+public:
+     T * p;
+     int size;
+     myclass(const T * t, int n){
+        size = n;
+        p = new T[size];
+        for(int i = 0; i < size; i++){
+            *(p + i) = *(t + i);
+        }
+     }
+~myclass( ) {   
 		delete [] p;
 	}
 	void Show()

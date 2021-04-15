@@ -16,8 +16,20 @@ bool Greater3(double d1,double d2)
 }
 
 template <class T1,class T2>
-void mysort(
-// 在此处补充你的代码
+void mysort(T1 * t1, T1 * t2, bool fp(T2 a, T2 b)){
+    int size = t2 - t1;
+    bool s;
+    for(int i = 0; i < size - 1; i++){
+        for(int j = 0; j < size - 1 - i; j++){
+           s = fp(*(t1 + j), *(t1 + j + 1));
+           if(!s){
+               T1 tmp = *(t1 + j);
+               *(t1 + j) = *(t1 + j + 1);
+               *(t1 + j + 1) = tmp;
+           }
+        }
+    }
+}
 #define NUM 5
 int main()
 {

@@ -15,7 +15,22 @@ using namespace std;
 template <class T>
 class CMyistream_iterator
 {
-// 在此处补充你的代码
+public:
+    T  t;
+    istream & input;
+    bool s;
+    CMyistream_iterator(istream & i):input(i){s = false;}
+    T & operator*(){
+        if(s)
+            return t;
+        input >> t;
+        s = true;
+        return t;
+    }
+    T & operator++(int){
+        input >> t;
+        return t;
+    }
 };
 
 
