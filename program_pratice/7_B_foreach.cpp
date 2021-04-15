@@ -15,7 +15,14 @@
 #include <iostream>
 #include <string>
 using namespace std;
-// 在此处补充你的代码
+template<class T1, class T2>
+void MyForeach(T1 * t1, T1 * t2, void fp(T2 t)){
+    while(t1 != t2){
+        fp(*t1);
+        t1++;                       
+    }
+}
+
 void Print(string s)
 {
 	cout << s;
