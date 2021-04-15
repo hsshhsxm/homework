@@ -9,7 +9,21 @@ MikeJackLucy
 #include <iostream>
 #include <string>
 using namespace std;
-// 在此处补充你的代码
+
+template<class T,class T1>
+T * Filter(T *t1, T *t2, T *t3, bool fp(T1 t)){
+    T result;
+    int i = 0;
+    while(t1 != t2){
+        if(fp(*t1)){
+            *(t3+i) = *t1;
+            i++;
+        }
+        *t1++;
+    }
+    return t3 + i;
+}
+
 bool LargerThan2(int n)
 {
 	return n > 2;

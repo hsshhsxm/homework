@@ -11,7 +11,20 @@
 using namespace std;
 class MyCin
 {
-// 在此处补充你的代码
+public:
+    bool s;
+    MyCin():s(true){}
+    MyCin & operator>>(int & n){
+        if(!s)
+            return *this;
+        cin >> n;
+        if(n == -1)
+            s = false;
+        return *this;
+    }
+    operator bool(){
+        return s;
+    }
 };
 int main()
 {
