@@ -17,7 +17,7 @@ int main(){
 		printf("%c ",str[i]);
 	}
 	printf("\n");
-	printf("逆序输出为:");
+	printf("逆序输出为: ");
 	for(int i = 0; i < count; i++){
 		printf("%c",str[count - i - 1]);
 	}
