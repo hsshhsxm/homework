@@ -4,7 +4,16 @@ using namespace std;
 
 template <class T>
 struct GoodCopy {
-// 在此处补充你的代码
+    void operator()(T* s, T* e, T* t){
+        int size = e - s;
+        T tmp[size];
+        for(int i = 0; i < size; i++){
+            tmp[i] = s[i];
+        }
+        for(int i = 0; i < size; i++){
+            t[i] = tmp[i];
+        }
+    }
 };
 
 int a[200];
