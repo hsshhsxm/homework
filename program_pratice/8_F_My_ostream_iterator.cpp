@@ -18,15 +18,11 @@ public:
     T t;
     ostream & o;
     string s;
-    bool st;
-    myostream_iteraotr(ostream & o, string s):o(o),s(s),st(false){}
+    myostream_iteraotr(ostream & o, string s):o(o),s(s){}
     T & operator*(){
-        st = true;
         return t;
     }
     myostream_iteraotr & operator++(){
-        if(!st)
-            return *this;
         o << t << s;
         return *this;
     }
