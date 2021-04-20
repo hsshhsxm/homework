@@ -9,13 +9,9 @@ public:
     class CArray2D{
     public:
         int y,z;
-        T ** ptr2D;
+        T * ptr2D;
         CArray2D(){}
         ~CArray2D(){
-            /* for(int m = 0; m < y; ++m){ */
-                /* if(ptr2D[m]) */
-                    /* delete ptr2D[m]; */
-            /* } */
             if(ptr2D)
                 delete [] ptr2D;
         }
@@ -24,16 +20,13 @@ public:
             z = k;
         }
         void init2D(){
-            ptr2D = new T*[y];
-            for(int m = 0; m < y; ++m){
-                ptr2D[m] = new T[z];
-            }
+            ptr2D = new T[y * z];
         }
         T* operator[](int i){
-            return *(ptr2D + i);
+            return (ptr2D + i*y);
         }
         operator void*(){
-            return *ptr2D;
+            return ptr2D;
         }
     };
     int x,y,z;
