@@ -5,7 +5,54 @@ using namespace std;
 template <class T>
 class CArray3D
 {
-// 在此处补充你的代码
+public:
+    class CArray2D{
+    public:
+        int y,z;
+        T ** ptr2D;
+        CArray2D(){}
+        ~CArray2D(){
+            /* for(int m = 0; m < y; ++m){ */
+                /* if(ptr2D[m]) */
+                    /* delete ptr2D[m]; */
+            /* } */
+            if(ptr2D)
+                delete [] ptr2D;
+        }
+        void setYZ(int j, int k){
+            y = j;
+            z = k;
+        }
+        void init2D(){
+            ptr2D = new T*[y];
+            for(int m = 0; m < y; ++m){
+                ptr2D[m] = new T[z];
+            }
+        }
+        T* operator[](int i){
+            return *(ptr2D + i);
+        }
+        operator void*(){
+            return *ptr2D;
+        }
+    };
+    int x,y,z;
+    CArray2D * ptr;
+    CArray3D(int i, int j, int k):x(i),y(j),z(k){
+        ptr = new CArray2D[x];
+        for(int m = 0; m < x; ++m){
+            (ptr+m)->setYZ(j,k);
+            (ptr+m)->init2D();
+        }
+    }
+    ~CArray3D(){
+        if(ptr)
+            delete [] ptr;
+    }
+
+    CArray2D & operator[](int i){
+        return *(ptr + i);
+    }
 };
 
 CArray3D<int> a(3,4,5);
