@@ -14,7 +14,22 @@ void Copy(T1 s,T1 e, T2 x)
 template<class T>
 class myostream_iteraotr
 {
-// 在此处补充你的代码
+public:
+    T t;
+    ostream & o;
+    string s;
+    bool st;
+    myostream_iteraotr(ostream & o, string s):o(o),s(s),st(false){}
+    T & operator*(){
+        st = true;
+        return t;
+    }
+    myostream_iteraotr & operator++(){
+        if(!st)
+            return *this;
+        o << t << s;
+        return *this;
+    }
 };
 
 
