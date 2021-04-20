@@ -23,7 +23,7 @@ public:
             ptr2D = new T[y * z];
         }
         T* operator[](int i){
-            return (ptr2D + i*y);
+            return (ptr2D + i*z);
         }
         operator void*(){
             return ptr2D;
