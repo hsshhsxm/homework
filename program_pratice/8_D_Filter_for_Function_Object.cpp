@@ -11,7 +11,22 @@ struct A {
 		return v < a.v;
 	}
 };
-// 在此处补充你的代码
+
+bool operator>(const A & a,int m){
+    return a.v > m;
+}
+
+template <class T>
+struct FilterClass{
+    int m,n;
+    FilterClass(int i, int j):m(i),n(j){}
+    bool operator()(T t){
+       if((t>m) && (t<n))
+           return true;
+       return false;
+    }
+};
+
 template <class T>
 void Print(T s,T e)
 {
