@@ -105,7 +105,6 @@ int Bmp::readFile(const char* fileName){
 	width = info.biWidth;
 	size = height * width;
 	//cout << "old h,w=" << height << "," << width << endl;
-	//每一行存储像素信息的字节数必须是4的倍数
 	int toAdd = getToAdd(info);
 	data = new DATA[size];
 	//read pixel data
