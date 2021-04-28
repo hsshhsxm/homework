@@ -3,7 +3,6 @@
 #define MAXBUFFER 256
 
 void findMaxStr(char * str){
-    char tmpMax[MAXBUFFER];
     int maxCount = 0,tmpCount = 0, begin = 0;
     for(int i = 0; i < MAXBUFFER; ++i){
         if((str[i] <= 'z' && str[i] >= 'a') || (str[i] <= 'Z' && str[i] >= 'A')){
