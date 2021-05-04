@@ -5,33 +5,28 @@ using namespace std;
 
 int main(){
     map<int,int> myMap;
-    myMap[1] = 1000000000;
+    myMap[1000000000] = 1;
     int n;
     cin >> n;
     while(n){
         --n;
         int id, fi;
         cin >> id >> fi;
-        int min = abs(fi - myMap[1]);
-        int minID = 1;
-        set<int> results;
-        results.insert(1);
-        map<int,int>::iterator it = myMap.begin();
-        for(it = myMap.begin(); it != myMap.end(); ++it){
-            if(abs(fi - it->second) < min){
-                min = abs(fi - it->second);
-                if(results.size() == 1)
-                    results.erase(results.begin());
-            }
-        }
-        for(it = myMap.begin(); it != myMap.end(); ++it){
-            if(abs(fi - it->second) == min)
-                results.insert(it->first);
-        }
-        set<int>::iterator si = results.begin();
-        cout << id << " " << *si << endl;
-        myMap[id] = fi;
+		map<int,int>::iterator it = myMap.lower_bound(fi);
+		if(it = myMap.end())
+			--it;
+		int min = abs(fi - it->first);
+		int minid = it->second;
+		if(it != myMap.begin()){
+			--it;
+			if(abs(fi - it->first) < min || (abs(fi - it->first) == min && it->second < minid)){
+				minid = it->second;
+			}
+		}
+		cout << id << " " << minid << endl;
+		it = myMap.find(fi);
+		if(it == myMap.end() || it -> second > id)
+			myMap[fi] = id;
     }
-
     return 0;
 }
