@@ -1,6 +1,5 @@
 #include <iostream>
 #include <map>
-#include <set>
 using namespace std;
 
 int main(){
@@ -13,7 +12,7 @@ int main(){
         int id, fi;
         cin >> id >> fi;
 		map<int,int>::iterator it = myMap.lower_bound(fi);
-		if(it = myMap.end())
+		if(it == myMap.end())
 			--it;
 		int min = abs(fi - it->first);
 		int minid = it->second;
