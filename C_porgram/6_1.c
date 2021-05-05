@@ -7,7 +7,7 @@ void findMaxStr(char * str){
     for(int i = 0; i < MAXBUFFER; ++i){
         if((str[i] <= 'z' && str[i] >= 'a') || (str[i] <= 'Z' && str[i] >= 'A')){
             tmpCount += 1;
-        } else if(str[i] == ' '){
+        } else if(str[i] == ' ' || str[i] == '\n' || str[i] == '\0'){
             if(tmpCount > maxCount){
                 begin = i - tmpCount;
                 maxCount = tmpCount;
@@ -25,7 +25,7 @@ void findMaxStr(char * str){
 
 int main(){
     char str[MAXBUFFER];
-    gets(str);
+    fgets(str, MAXBUFFER, stdin);
     findMaxStr(str);
     return 0;
 }
