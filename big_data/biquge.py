@@ -76,7 +76,7 @@ class spider():
                 chapterName = str(chapterName)
                 chapterName.strip()
                 self.writeToFile(chapterName, content)
-                tmp = float(count)/l
+                tmp = float(count)/l * 100
                 print("《%s》写入完成，当前进度%.2f%%"%(chapterName,tmp))
                 time.sleep(1)
         except:
