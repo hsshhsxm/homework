@@ -19,18 +19,18 @@ class spider():
         self.urlSet = set()
         self.urlList = []
         self.title = ""
-    
+    #创建结果文件夹
     def mkdir(self):
         folder = os.path.exists(self.path)
         if not folder:
             os.makedirs(self.path) 
             print("makedir : novel_result")
-    
+    #获取用于对urlSet排序的key，即小说章节的编号
     def getKey(self, myUrl):
         myUrl = myUrl.replace(self.url,"")
         myUrl = myUrl.replace(".html","")
         return int(myUrl)
-
+    #获取小说的章节列表
     def getList(self):
         try:
             req = requests.get(self.url, headers = self.headers)
@@ -54,14 +54,14 @@ class spider():
             s = sys.exc_info()
             print("Error '%s' happened on line %d" % (s[1], s[2].tb_lineno))
             print("Getting url list failed")
-    
+    #向文件写入数据
     def writeToFile(self, chapterName, content):
         filePath = self.path + self.title + ".txt"
         with open(filePath, 'a', encoding='utf8') as f:
             f.write("KEY:" + chapterName + '\n')
             f.writelines("\n".join(content.split())+'\n')
             f.write('\n\n')
-
+    #获取小说的内容
     def getContent(self):
         try:
             count = 0
@@ -87,9 +87,11 @@ class spider():
 if __name__ == "__main__":
     print("input url:")
     tmp = input()
+    #获取小说的内容
     tmp = tmp.replace("https://www.biquge5200.cc/", "")
     tmp = tmp.replace("/", "")
     no = tmp.split('_', 1)
+    #爬虫
     sp = spider(no[0],no[1])
     sp.mkdir()
     sp.getList()

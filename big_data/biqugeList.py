@@ -22,27 +22,27 @@ class spiderForList():
         self.author = ""
         self.bookClass = ""
         self.intro = ""
-    
+    #创建结果文件夹
     def mkdir(self):
         folder = os.path.exists(self.path)
         if not folder:
             os.makedirs(self.path) 
             print("makedir : result")
-    
+    #创建csv文件的列名
     def createCSV(self):
         filePath = self.path + "res" + ".csv"
         with open(filePath, 'w', encoding='utf8') as f:
             csvWrite = csv.writer(f)
             dataRow = ["编号", "类别", "书名", "作者", "简介"]
             csvWrite.writerow(dataRow)
-
+    #向文件写入数据
     def writeToFile(self):
         filePath = self.path + "res" + ".csv"
         with open(filePath, 'a', encoding='utf8') as f:
             csvWrite = csv.writer(f)
             dataRow = [self.No, self.bookClass, self.name, self.author, self.intro]
             csvWrite.writerow(dataRow)
-    
+    #获取小说信息，包括书名、类别等
     def getContent(self):
         try:
             req = requests.get(url = self.url, headers = self.headers)
@@ -66,7 +66,9 @@ class spiderForList():
 
 if __name__ == "__main__":
     No1 = 0
+    #目前网站有147747本小说
     No2  = 147747
+    #爬虫
     for i in range(1, No2 + 1):
         sp = spiderForList(No1, i)
         sp.mkdir()
@@ -77,4 +79,3 @@ if __name__ == "__main__":
         except:
             pass 
             continue
-    
