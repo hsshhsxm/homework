@@ -13,7 +13,7 @@ class spider():
             "Accept-Encoding": "",
             "Connection": "keep-alive",
         }
-        self.path = os.path.abspath(os.path.dirname(__file__)) + os.sep + "novel_result" + os.sep
+        self.path = os.path.abspath(os.path.dirname(__file__)) + os.sep + "result" + os.sep
         self.url = "https://www.biquge5200.cc/" + str(No1) + "_" + str(No2) + "/"
         self.No = "/" + str(No1) + "_" + str(No2) + "/"
         self.urlSet = set()
