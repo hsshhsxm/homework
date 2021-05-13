@@ -33,10 +33,9 @@ void resetWall(){
 }
 
 bool check(){
-	for(int i = 1; i <=n; ++i)
-		for(int j = 0; j <=n; ++j)
-			if(wall[i][j] == 'w')
-				return false;
+	for(int j = 1; j <=n; ++j)
+		if(wall[n][j] == 'w')
+			return false;
 	return true;
 }
 
