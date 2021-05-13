@@ -66,6 +66,11 @@ void paint(int i, int j){
 
 void solve(){
 	int minStep = 0;
+	//考虑一开始就是全y的情况
+	if(check()){
+		cout << minStep << endl;
+		return;
+	}
 	for(int i = 0; i < (1<<n); ++i){
 		setBinary(i);
 		int step = 0;
@@ -92,6 +97,7 @@ void solve(){
 		cout << "inf" << endl;
 	else
 		cout << minStep << endl;
+	return;
 }
 
 int main(){
