@@ -47,18 +47,28 @@ char color(char c){
 		return 'w';
 }
 
+void printWall(){
+    for(int i = 1; i <= n; ++i){
+        for(int j = 1; j <= n; ++j)
+            cout << wall[i][j];
+        cout << endl;
+    }
+}
+
 void paint(int i, int j){
+    cout << "paint " << i << "," << j << endl;
 	wall[i][j] = color(wall[i][j]);
 	wall[i-1][j] = color(wall[i-1][j]);
 	wall[i+1][j] = color(wall[i+1][j]);
 	wall[i][j-1] = color(wall[i][j-1]);
 	wall[i][j+1] = color(wall[i][j+1]);
+    printWall();
 }
 
 void solve(){
 	int minStep = 0;
 	for(int i = 0; i < (1<<n); ++i){
-		setBinary();
+		setBinary(i);
 		int step = 0;
 		for(int j = 0; j < n; ++j)
 			if(binary[j] == 1){
@@ -66,12 +76,12 @@ void solve(){
 				paint(1,j+1);
 			}
 		for(int j = 2; j <=n; ++j)
-			for(int k = 1; i <=n; ++k)
+			for(int k = 1; k <=n; ++k)
 				if(wall[j - 1][k] == 'w'){
 					paint(j,k);
 					++step;
 				}
-		if(ckeck()){
+		if(check()){
 			if(step < minStep)
 				minStep = step;
 		}
@@ -86,6 +96,7 @@ void solve(){
 int main(){
 	init();
 	cin >> n;
+    freopen("out.txt", "w", stdout);
 	for(int i = 1; i <= n; ++i){
 		for(int j = 1; j <= n; ++j){
 			cin >> wall[i][j];
