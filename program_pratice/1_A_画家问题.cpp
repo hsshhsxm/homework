@@ -55,13 +55,13 @@ void printWall(){
 }
 
 void paint(int i, int j){
-    cout << "paint " << i << "," << j << endl;
+    //cout << "paint " << i << "," << j << endl;
 	wall[i][j] = color(wall[i][j]);
 	wall[i-1][j] = color(wall[i-1][j]);
 	wall[i+1][j] = color(wall[i+1][j]);
 	wall[i][j-1] = color(wall[i][j-1]);
 	wall[i][j+1] = color(wall[i][j+1]);
-    printWall();
+    //printWall();
 }
 
 void solve(){
@@ -81,6 +81,8 @@ void solve(){
 					++step;
 				}
 		if(check()){
+            if(minStep == 0)
+                minStep = step;
 			if(step < minStep)
 				minStep = step;
 		}
@@ -95,7 +97,7 @@ void solve(){
 int main(){
 	init();
 	cin >> n;
-    freopen("out.txt", "w", stdout);
+    //freopen("out.txt", "w", stdout);
 	for(int i = 1; i <= n; ++i){
 		for(int j = 1; j <= n; ++j){
 			cin >> wall[i][j];
