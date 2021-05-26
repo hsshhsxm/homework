@@ -1,75 +1,72 @@
 #include <iostream>
+#include <string>
+#include <algorithm>
 using namespace std;
+
+string str;
+int pos = 0;
 
 char expr();
 char term();
 char factor();
 
+void removeSpace(){
+    int index = 0;
+     if( !str.empty())
+         while( (index = str.find(' ',index)) != string::npos)
+             str.erase(index,1);
+}
+
 char factor(){
     char v;
-    while(cin.peek() == ' ')
-        cin.get();
-    char c = cin.peek();
+    char c = str[pos];
     if(c == '('){
-        cin.get();
+        pos++;
         v = expr();
-        while(cin.peek() == ' ')
-            cin.get();
-        cin.get();
+        pos++;
     }
-    else if(c == '!'){
-        cin.get();
-        c = cin.peek();
-        if(c == '('){
-            cin.get();
-            v = expr();
-            while(cin.peek() == ' ')
-                cin.get();
-            cin.get();
-        }
-        else{
-            v = cin.get();
-        }
-        (v == 'V') ? v = 'F' : v = 'V';
-    }
+    else if(c == '!')
+        v = term();
     else 
-        v = cin.get();
+        v = str[pos++];
     return v;
 }
 
 char term(){
-    int v = factor();
-    while(true){
-        while(cin.peek() == ' ')
-            cin.get();
-        char c = cin.peek();
-        if(c == '&'){
-            cin.get();
-            char a = factor();
-            if(v == 'V' && a == 'V')
-                v = 'V';
-            else 
-                v = 'F';
-        }
+    char c = str[pos];
+    char v;
+    if(c == '!'){
+        pos++;
+        char a = factor();
+        if(a == 'V')
+            v = 'F';
         else 
-            break;
+            v = 'V';
     }
+    else 
+        v = factor();
     return v;
 }
 
 char expr(){
     char v = term();
     while(true){
-        while(cin.peek() == ' ')
-            cin.get();
-        char c = cin.peek();
+        char c = str[pos];
         if(c == '|'){
-            cin.get();
+            pos++;
             char a = term();
             if(v == 'F' && a == 'F')
                 v = 'F';
             else 
                 v = 'V';
+        }
+        else if(c == '&'){
+            pos++;
+            char a = term();
+            if(v == 'V' && a == 'V')
+                v = 'V';
+            else 
+                v = 'F';
         }
         else 
             break;
@@ -82,12 +79,14 @@ int main()
 {
     int i = 1;
     char a;
-    while(cin.peek() != EOF){
+    while(getline(cin,str)){
+        removeSpace();
         char r = expr();
         if(r == 'F' || r == 'V')
             cout << "Expression " << i++ << ": " << r << endl;
         else 
-            continue;
+            break;
+        pos = 0;
     }
     return 0;
 }
