@@ -391,6 +391,8 @@ struct CardCombo
 				second++;
 			return CardCombo(begin, second); // 出最小的
 			*/
+		// TODO 出牌策略
+
 		}
 
 		// 然后先看一下是不是火箭，是的话就过
