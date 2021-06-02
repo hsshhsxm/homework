@@ -382,17 +382,276 @@ struct CardCombo
 	{
 		if (comboType == CardComboType::PASS) // 如果不需要大过谁，只需要随便出
 		{
-			/*
-			CARD_ITERATOR second = begin;
-			second++;
-			if((*second) % 13 == *begin)
-				second++;
-			if((*second) % 13 == *begin)
-				second++;
-			return CardCombo(begin, second); // 出最小的
-			*/
 		// TODO 出牌策略
+			CardCombo myCombo(begin, end);
+			auto deck = vector<Card>(begin, end); // 手牌
+			short counts[MAX_LEVEL + 1] = {};
+			unsigned short kindCount = 0;
+			// 先数一下手牌里每种牌有多少个
+			for (Card c : deck)
+				counts[card2level(c)]++;
+			// 再数一下手牌里有多少种牌
+			for (short c : counts)
+				if (c)
+					kindCount++;
+			// 同种牌的张数（有多少个单张、对子、三条、四条）
+			short countOfCount[5] = {};
+			for (Level l = 0; l <= MAX_LEVEL; l++)
+				if (counts[l]){
+					countOfCount[counts[l]]++;
+				}
 
+			//三带...
+			if(countOfCount[3]){
+				vector<Card> result;
+				if(countOfCount[3] < 2){//只有一个
+					CARD_ITERATOR second = begin;
+					for(int i = 0; i < MAX_LEVEL - 3; ++i){
+						if(counts[i] == 3)
+							break;
+						for(int j = 0; j < counts[i]; ++j)
+							++second;
+					}
+					for(int i = 0; i < 3; ++i){
+						result.push_back(*second);
+						++second;
+					}
+					//三带一
+					if(countOfCount[1]){
+						CARD_ITERATOR tmpIt = begin;
+						for(int i = 0; i < MAX_LEVEL - 3; ++i){
+							if(counts[i] == 1)
+								break;
+							for(int j = 0; j < counts[i]; ++j)
+								++tmpIt;
+						}
+						result.push_back(*tmpIt);
+						return CardCombo(result.begin(), result.end());
+					}
+					//三带二
+					if(countOfCount[2]){
+						CARD_ITERATOR tmpIt = begin;
+						for(int i = 0; i < MAX_LEVEL - 3; ++i){
+							if(counts[i] == 2)
+								break;
+							for(int j = 0; j < counts[i]; ++j)
+								++tmpIt;
+						}
+						result.push_back(*tmpIt);
+						++tmpIt;
+						result.push_back(*tmpIt);
+						return CardCombo(result.begin(), result.end());
+					}
+				}
+				else {
+					CARD_ITERATOR second = begin;
+					for(int i = 0; i < MAX_LEVEL - 3; ++i){
+						if(counts[i] != 3)
+							for(int j = 0; j < counts[i]; ++j)
+								++second;
+						else {
+							int tmpMax = 1;
+							for(int j = i + 1; j < MAX_LEVEL - 3; ++j){
+								if(counts[j] == 3)
+									++tmpMax;
+								else 
+									break;
+							}
+							if(tmpMax > 1){
+								for(int j = 0; j < 6; ++j){
+									result.push_back(*second);
+									++second;
+								}
+								//3+1
+								if(countOfCount[1] > 1){
+									int num = 0;
+									CARD_ITERATOR tmpIt = begin;
+									for(int j = 0; j < MAX_LEVEL - 3; ++j){
+										if(counts[j] == 1){
+											result.push_back(*tmpIt);
+											++num;
+										}
+										if(num == 2)
+											break;
+										for(int k = 0; k < counts[j]; ++k)
+											++tmpIt;
+									}
+									return CardCombo(result.begin(), result.end());
+								}
+								//3+2
+								if(countOfCount[2]){
+									CARD_ITERATOR tmpIt = begin;
+									for(int j = 0; j < MAX_LEVEL - 3; ++j){
+										if(counts[j] == 2)
+											break;
+										for(int k = 0; k < counts[j]; ++k)
+											++tmpIt;
+									}
+									result.push_back(*tmpIt);
+									++tmpIt;
+									result.push_back(*tmpIt);
+									return CardCombo(result.begin(), result.end());
+								}
+								//3
+								if(result.size() > 0)
+									return CardCombo(result.begin(), result.end());
+							}
+							else{
+								CARD_ITERATOR second = begin;
+								for(int j = 0; j < MAX_LEVEL - 3; ++j){
+									if(counts[j] == 3)
+										break;
+									for(int k = 0; k < counts[j]; ++k)
+										++second;
+								}
+								for(int j = 0; j < 3; ++j){
+									result.push_back(*second);
+									++second;
+								}
+								//3+1
+								if(countOfCount[1]){
+									CARD_ITERATOR tmpIt = begin;
+									for(int j = 0; j < MAX_LEVEL - 3; ++j){
+										if(counts[j] == 1)
+											break;
+										for(int k = 0; k < counts[j]; ++k)
+											++tmpIt;
+									}
+									result.push_back(*tmpIt);
+									return CardCombo(result.begin(), result.end());
+								}
+								//3+2
+								if(countOfCount[2]){
+									CARD_ITERATOR tmpIt = begin;
+									for(int j = 0; j < MAX_LEVEL - 3; ++j){
+										if(counts[j] == 2)
+											break;
+										for(int k = 0; k < counts[j]; ++k)
+											++tmpIt;
+									}
+									result.push_back(*tmpIt);
+									++tmpIt;
+									result.push_back(*tmpIt);
+									return CardCombo(result.begin(), result.end());
+								}
+								//3
+								if(result.size() > 0)
+									return CardCombo(result.begin(), result.end());
+							}
+						}
+					}
+				}
+			}
+			//单张
+			if(countOfCount[1]){
+				CARD_ITERATOR second = begin;
+				//单张少于5张
+				if(countOfCount[1] < 5 || myCombo.findMaxSeq() < 5 || countOfCount[1] < myCombo.findMaxSeq()){
+					int judge = 0;
+					for(int i = 0; i < MAX_LEVEL; ++i){
+						if(counts[i] == 1)
+							break;
+						for(int j = 0; j < counts[i]; ++j)
+							++second;
+						if(deck.size() > 8 && i > 8){
+							judge = 1;
+							break;
+						}
+					}
+					if(judge == 0){
+						CARD_ITERATOR endIt = second;
+						++endIt;
+						return CardCombo(second,endIt);
+					}
+				}
+				else{
+					int tmpCount = 0;
+					for(int i = 0; i < MAX_LEVEL - 8; ++i){
+						tmpCount += counts[i];
+						if(counts[i] == 1){
+							int tmpMax = 1;
+							for(int j = i + 1; j < MAX_LEVEL - 3; ++j){
+								if(counts[j] == 1)
+									++tmpMax;
+								else 
+									break;
+							}
+							if(tmpMax > 4){//顺子
+								CARD_ITERATOR start = begin;
+								for(int j = 0; j < tmpCount; ++j)
+									++start;
+								CARD_ITERATOR finish = start;
+								for(int j = 0; j < tmpMax; ++j)
+									++finish;
+								return CardCombo(start, finish);
+							}
+							else {//单张
+								CARD_ITERATOR start = begin;
+								for(int j = 0; j < tmpCount; ++j)
+									++start;
+								CARD_ITERATOR finish = start;
+								for(int j = 0; j < 1; ++j)
+									++finish;
+								return CardCombo(start, finish);
+							}
+						}
+					}
+				}
+			}
+			//对子
+			if(countOfCount[2]){
+				CARD_ITERATOR second = begin;
+				if(countOfCount[2] > 2){//连对
+					int tmpCount = 0;
+					for(int i = 0; i < MAX_LEVEL - 8; ++i){
+						if(counts[i] == 2){
+							int tmpMax = 1;
+							for(int j = i + 1; j < MAX_LEVEL - 3; ++j){
+								if(counts[j] == 2)
+									++tmpMax;
+								else 
+									break;
+							}
+							if(tmpMax > 2){
+								CARD_ITERATOR start = begin;
+								for(int j = 0; j < tmpCount; ++j)
+									++start;
+								CARD_ITERATOR finish = start;
+								for(int j = 0; j < tmpMax * 2; ++j)
+									++finish;
+								return CardCombo(start, finish);
+							}
+							else {
+								CARD_ITERATOR start = begin;
+								for(int j = 0; j < tmpCount; ++j)
+									++start;
+								CARD_ITERATOR finish = start;
+								for(int j = 0; j < 2; ++j)
+									++finish;
+								return CardCombo(start, finish);
+							}
+						}
+						tmpCount += counts[i];
+					}
+				}
+				else{//对子
+					for(int i = 0; i < MAX_LEVEL; ++i){
+						if(counts[i] == 2)
+							break;
+						for(int j = 0; j < counts[i]; ++j)
+							++second;
+					}
+				}
+				CARD_ITERATOR endIt = second;
+				++endIt;
+				++endIt;
+				return CardCombo(second,endIt);
+			}
+			else{//出最小的
+				CARD_ITERATOR second=begin;
+                second++;
+                return CardCombo(begin,second);
+			}
 		}
 
 		// 然后先看一下是不是火箭，是的话就过
@@ -417,6 +676,36 @@ struct CardCombo
 		for (short c : counts)
 			if (c)
 				kindCount++;
+
+		// TODO 应对单张
+		if (comboType == CardComboType::SINGLE){
+			CARD_ITERATOR start = begin;
+			for(int i = 0; i < MAX_LEVEL; ++i){
+				if(i > packs[0].level && counts[i] == 1){
+					if(i == 13 && counts[13] == 1 && counts[14] == 1){
+						return CardCombo();
+					}
+					else{
+						CARD_ITERATOR second = start;
+						++second;
+						return CardCombo(start, second);
+					}
+				}
+				for(int j = 0; j < counts[i]; ++j)
+					++start;
+			}
+			start = begin;
+			for(int i = 0; i < MAX_LEVEL; ++i){
+				if(i > packs[0].level && counts[i] != 0 && counts[i] != 4){
+					CARD_ITERATOR second = start;
+					++second;
+					return CardCombo(start, second);
+				}
+				for(int j = 0; j < counts[i]; ++j)
+					++start;
+			}
+			return CardCombo();
+		}
 
 		// 否则不断增大当前牌组的主牌，看看能不能找到匹配的牌组
 		{
@@ -693,9 +982,14 @@ int main()
 		int maxBid = maxBidIt == bidInput.end() ? -1 : *maxBidIt;
 
 		int bidValue = rand() % (3 - maxBid) + maxBid + 1;
-
-		//bidValue = 0;
-
+		// TODO 有火箭叫分
+		auto deck = vector<Card>(myCards.begin(), myCards.end()); // 手牌
+		short counts[MAX_LEVEL + 1] = {};
+		// 先数一下手牌里每种牌有多少个
+		for (Card c : deck)
+			counts[card2level(c)]++;
+		if (counts[level_joker] + counts[level_JOKER] == 2)
+			bidValue = 3;
 		// 决策结束，输出结果（你只需修改以上部分）
 
 		BotzoneIO::bid(bidValue);
