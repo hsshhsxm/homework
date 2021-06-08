@@ -43,8 +43,9 @@ class anaylseSentiment:
         print(time.strftime("%Y-%m-%d %H:%M:%S 数据共" + str(num) + "行", time.localtime()))
         return num
     
+    #第n行分析情感
     def analyse(self, No):
-        cmd = "SELECT id, cleanedText FROM project.travel_poi_checkin_weibos_suzhou LIMIT " + str(No-1) + ",1;"
+        cmd = "SELECT id, cleaned_text FROM project.travel_poi_checkin_weibos_suzhou LIMIT " + str(No-1) + ",1;"
         self.cursor.execute(cmd)
         self.logFile.write(time.strftime("%Y-%m-%d %H:%M:%S 执行命令" + cmd + "\n", time.localtime()))
         print(time.strftime("%Y-%m-%d %H:%M:%S 执行命令" + cmd, time.localtime()))
@@ -75,7 +76,8 @@ class anaylseSentiment:
 if __name__ == "__main__":
     db = anaylseSentiment("localhost", "hs", "hs", "project")
     num =db.getNum()
-    for i in range(800, 10001):
+    #已进行至50000
+    for i in range(1, num + 1):
         db.analyse(i)
         if i % 50 == 0:
             db.commit()

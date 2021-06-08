@@ -9,7 +9,6 @@ ALTER TABLE project.travel_poi_checkin_weibos_suzhou ADD word_split varchar(512)
 
 import pymysql
 import time
-import threading
 import os
 from weibo_preprocess_toolkit import WeiboPreprocess
 

@@ -8,7 +8,6 @@ ALTER TABLE project.travel_poi_checkin_weibos_suzhou ADD cleaned_text varchar(51
 
 import pymysql
 import time
-import threading
 import os
 from weibo_preprocess_toolkit import WeiboPreprocess
 
@@ -45,7 +44,7 @@ class cleanText:
         print(time.strftime("%Y-%m-%d %H:%M:%S 数据共" + str(num) + "行", time.localtime()))
         return num
     
-    #第n行分词
+    #第n行清洗文本
     def clean(self, No):
         cmd = "SELECT id,text FROM project.travel_poi_checkin_weibos_suzhou LIMIT " + str(No-1) + ",1;"
         self.cursor.execute(cmd)
@@ -77,7 +76,7 @@ class cleanText:
 if __name__ == "__main__":
     db = cleanText("localhost", "hs", "hs", "project")
     num =db.getNum()
-    #已进行至26900
+    #已进行至50000
     for i in range(1, num + 1):
         db.clean(i)
         if i % 50 == 0:
