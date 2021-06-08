@@ -3,7 +3,7 @@
 
 '''
 添加cleanedText列，用于文本清洗的结果，去除url、tag等
-ALTER TABLE project.travel_poi_checkin_weibos_suzhou ADD cleanedText varchar(512) DEFAULT NULL;
+ALTER TABLE project.travel_poi_checkin_weibos_suzhou ADD cleaned_text varchar(512) DEFAULT NULL;
 '''
 
 import pymysql
@@ -58,7 +58,7 @@ class cleanText:
         text = row[1]
         #print(str(id) + " " + text)
         wordSplited = self.preprocess.clean(text, simplified=False)
-        cmd = "UPDATE project.travel_poi_checkin_weibos_suzhou SET cleanedText=\'" + wordSplited + "\' WHERE id=" + str(id) + ";"
+        cmd = "UPDATE project.travel_poi_checkin_weibos_suzhou SET cleaned_text=\'" + wordSplited + "\' WHERE id=" + str(id) + ";"
         #print(cmd)
         try:
             self.cursor.execute(cmd)
