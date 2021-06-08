@@ -78,8 +78,10 @@ class food:
         if not row:
             return
         id = row[0]
-        text = row[1]
-        string = self.findFood(text)
+        cleanedText = row[1]
+        if len(cleanedText) == 0:
+            return
+        string = self.findFood(cleanedText)
         if len(string) == 0:
             return
         cmd = "UPDATE project.travel_poi_checkin_weibos_suzhou SET food=\'" + string + "\' WHERE id=" + str(id) + ";"
