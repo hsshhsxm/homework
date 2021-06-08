@@ -2,9 +2,8 @@
 # coding=utf-8
 
 '''
-添加word_split列，用于存储分词的结果
-分词结果为去除stopword，保留关键词
-ALTER TABLE project.travel_poi_checkin_weibos_suzhou ADD word_split varchar(512) DEFAULT NULL;
+添加cleanedText列，用于文本清洗的结果，去除url、tag等
+ALTER TABLE project.travel_poi_checkin_weibos_suzhou ADD cleanedText varchar(512) DEFAULT NULL;
 '''
 
 import pymysql
@@ -13,7 +12,7 @@ import threading
 import os
 from weibo_preprocess_toolkit import WeiboPreprocess
 
-class splitWord:
+class cleanText:
     def __init__(self, url, usrname, usrpwd, dbname):
         try:
             self.db = pymysql.connect(host = url, user = usrname, password = usrpwd, database = dbname)
@@ -23,7 +22,7 @@ class splitWord:
             folder = os.path.join(path, "log")
             if not os.path.exists(folder):
                 os.makedirs(folder)
-            fileName = "log/splitWordLog.log"
+            fileName = "log/cleanTextLog.log"
             full = os.path.join(path, fileName)
             self.logFile = open(fileName, mode = 'a+')
             self.logFile.write(time.strftime("%Y-%m-%d %H:%M:%S 打开数据库成功\n", time.localtime()))
@@ -47,7 +46,7 @@ class splitWord:
         return num
     
     #第n行分词
-    def split(self, No):
+    def clean(self, No):
         cmd = "SELECT id,text FROM project.travel_poi_checkin_weibos_suzhou LIMIT " + str(No-1) + ",1;"
         self.cursor.execute(cmd)
         self.logFile.write(time.strftime("%Y-%m-%d %H:%M:%S 执行命令" + cmd + "\n", time.localtime()))
@@ -58,8 +57,8 @@ class splitWord:
         id = row[0]
         text = row[1]
         #print(str(id) + " " + text)
-        wordSplited = self.preprocess.preprocess(text, simplified=False, keep_stop_word=False)
-        cmd = "UPDATE project.travel_poi_checkin_weibos_suzhou SET word_split=\'" + wordSplited + "\' WHERE id=" + str(id) + ";"
+        wordSplited = self.preprocess.clean(text, simplified=False)
+        cmd = "UPDATE project.travel_poi_checkin_weibos_suzhou SET cleanedText=\'" + wordSplited + "\' WHERE id=" + str(id) + ";"
         #print(cmd)
         try:
             self.cursor.execute(cmd)
@@ -76,11 +75,11 @@ class splitWord:
         print(time.strftime("%Y-%m-%d %H:%M:%S 向数据库提交", time.localtime()))
 
 if __name__ == "__main__":
-    db = splitWord("localhost", "hs", "hs", "project")
+    db = cleanText("localhost", "hs", "hs", "project")
     num =db.getNum()
-    #已进行至229550
+    #已进行至26900
     for i in range(1, num + 1):
-        db.split(i)
+        db.clean(i)
         if i % 50 == 0:
             db.commit()
 
