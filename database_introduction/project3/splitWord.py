@@ -79,7 +79,11 @@ if __name__ == "__main__":
     num =db.getNum()
     #已进行至229550
     for i in range(1, num + 1):
-        db.split(i)
+        try:
+            db.split(i)
+        except:
+            pass
+            continue
         if i % 50 == 0:
             db.commit()
 

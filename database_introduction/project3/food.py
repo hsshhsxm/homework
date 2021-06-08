@@ -104,7 +104,11 @@ if __name__ == "__main__":
     num =db.getNum()
     #已进行至1000
     for i in range(1, num + 1):
-        db.executeCmd(i)
+        try:
+            db.executeCmd(i)
+        except:
+            pass
+            continue
         if i % 50 == 0:
             db.commit()
 

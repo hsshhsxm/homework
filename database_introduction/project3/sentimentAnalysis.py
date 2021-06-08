@@ -78,6 +78,10 @@ if __name__ == "__main__":
     num =db.getNum()
     #已进行至50000
     for i in range(1, num + 1):
-        db.analyse(i)
+        try:
+            db.analyse(i)
+        except:
+            pass
+            continue
         if i % 50 == 0:
             db.commit()
