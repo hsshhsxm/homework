@@ -2,6 +2,8 @@
 # coding=utf-8
 
 '''
+此方法速度太慢，放弃
+
 引用：
 在微博饮食分析中，我们需要用到分词、词性标注和依存句法分析。
 当研究一条微博判断是否发生饮食行为时，我们可以对微博内容的分词结果用这样一条规则：
@@ -29,7 +31,7 @@ class food:
             folder = os.path.join(path, "log")
             if not os.path.exists(folder):
                 os.makedirs(folder)
-            fileName = "log/cleanTextLog.log"
+            fileName = "log/findFoodLog.log"
             full = os.path.join(path, fileName)
             self.logFile = open(fileName, mode = 'a+')
             self.logFile.write(time.strftime("%Y-%m-%d %H:%M:%S 打开数据库成功\n", time.localtime()))
