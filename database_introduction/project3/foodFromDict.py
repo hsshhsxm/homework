@@ -95,7 +95,7 @@ if __name__ == "__main__":
     db = food("localhost", "hs", "hs", "project")
     num =db.getNum()
     db.readFromFile()
-    #已进行至5000
+    #已进行至50000
     for i in range(1, num + 1):
         try:
             db.executeCmd(i)
