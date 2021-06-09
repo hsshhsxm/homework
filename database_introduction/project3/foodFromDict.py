@@ -12,7 +12,6 @@ ALTER TABLE project.travel_poi_checkin_weibos_suzhou ADD food_from_dict varchar(
 import pymysql
 import time
 import os
-from ltp import LTP
 
 class food:
     def __init__(self, url, usrname, usrpwd, dbname):
