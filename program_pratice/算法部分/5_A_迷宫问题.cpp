@@ -1,107 +1,60 @@
 #include <iostream>
-#include <vector>
 #include <cstring>
 using namespace std;
 
-struct Point{
-    int x,y;
-    Point(int a, int b):x(a), y(b){}
-    bool operator!=(const Point & a){
-        if(x != a.x && y != a.y)
-            return true;
-        return false;
-    }
-    bool operator==(const Point & a){
-        if(x == a.x && y == a.y)
-            return true;
-        return false;
-    }
-};
+int maze[6][6];
+int roadx[25];
+int roady[25];
+int resx[25];
+int resy[25];
+int depth;
+int minLength;
 
-int maze[5][5];
-int visited[5][5];
-vector<Point> pointV;
-vector<Point> resV;
-
-Point getNextPoint(Point p){
-    Point res(-1,-1);
-    if(p.x - 1 >= 0){
-        if(visited[p.x - 1][p.y] == 0 || visited[p.x][p.y] + 1 < visited[p.x - 1][p.y]){
-            res.x = p.x - 1;
-            res.y = p.y;
-            return res;
-        }
-    }
-    if(p.x + 1 < 5){
-        if(visited[p.x + 1][p.y] == 0 || visited[p.x][p.y] + 1 < visited[p.x + 1][p.y]){
-            res.x = p.x + 1;
-            res.y = p.y;
-            return res;
-        }
-    }
-    if(p.y - 1 >= 0){
-        if(visited[p.x][p.y - 1] == 0 || visited[p.x][p.y] + 1 < visited[p.x][p.y - 1]){
-            res.x = p.x;
-            res.y = p.y - 1;
-            return res;
-        }
-    }
-    if(p.y + 1 < 5){
-        if(visited[p.x][p.y + 1] == 0 || visited[p.x][p.y] + 1 < visited[p.x][p.y + 1]){
-            res.x = p.x;
-            res.y = p.y + 1;
-            return res;
-        }
-    }
-    return res;
-}
-
-void getPath(Point & sp, Point & ep){
-    for(int i = 0; i < 5; ++i)
-        for(int j = 0; j < 5; ++j)
-            visited[i][j] = maze[i][j];
-    if(sp == ep){
-        pointV.push_back(sp);
-        return;
-    }
-    vector<Point> visitedV;
-    pointV.push_back(sp);
-    visited[sp.x][sp.y] = true;
-    while(pointV.size() != 0){
-        Point next = getNextPoint(pointV[pointV.size()-1]);
-        if(next.x == -1){
-            pointV.pop_back();
-            continue;
-        }
-        if(next == ep){
-            visited[next.x][next.y] = visited[pointV[pointV.size()-1].x][pointV[pointV.size()-1].y] + 1;
-            pointV.push_back(ep);
-            vector<Point> tmpV = pointV;
-            resV.clear();
-            while(tmpV.size() != 0){
-                resV.push_back(tmpV[tmpV.size() - 1]);
-                tmpV.pop_back();
-            }
-            pointV.pop_back();
-            continue;
-        }
-        //printf("next point = (%d, %d)\n", next.x, next.y);
-        visited[next.x][next.y] = visited[pointV[pointV.size()-1].x][pointV[pointV.size()-1].y] + 1;
-        pointV.push_back(next);
-    }
+void dfs(int x, int y){
+	if(depth > minLength)
+		return;
+	roadx[depth] = x;
+	roady[depth] = y;
+	depth++;
+	if(x == 5 && y == 5){
+		if(depth < minLength){
+			minLength = depth;
+			for(int i = 0; i < minLength; ++i){
+				resx[i] = roadx[i];
+				resy[i] = roady[i];
+			}
+		}
+		return;
+	}
+	maze[x][y] = 1;
+	if(x+1 <= 5 && maze[x+1][y] == 0)
+		dfs(x+1,y);
+	if(y+1 <= 5 && maze[x][y+1] == 0)
+		dfs(x,y+1);
+	if(y-1 >= 1 && maze[x][y-1] == 0)
+		dfs(x,y-1);
+	if(x-1 >= 1 && maze[x-1][y] == 0)
+		dfs(x-1,y);
+	depth--;
+	maze[x][y] = 0;
+	return;
 }
 
 int main(){
-    memset(maze, 0, sizeof(maze));
-    memset(visited, 0, sizeof(visited));
-    for(int i = 0; i < 5; ++i)
-        for(int j = 0; j < 5; ++j)
-            cin >> maze[i][j];
-    Point sp(0,0), ep(4,4);
-    getPath(sp, ep);
-    vector<Point> tmpV;
-    vector<Point>::reverse_iterator it = resV.rbegin();
-    for(; it != resV.rend(); ++it)
-        cout << "(" << it->x << ", " << it->y << ")" << endl;
-    return 0;
+	memset(maze, 1 ,sizeof(maze));
+	memset(roadx, 0, sizeof(roadx));
+	memset(roady, 0 ,sizeof(roady));
+	memset(resx, 0 , sizeof(resx));
+	memset(resy, 0 , sizeof(resy));
+	depth = 0;
+	minLength = 30;
+	for(int i = 1; i <= 5; ++i)
+		for(int j = 1; j <= 5; ++j)
+			cin >> maze[i][j];
+	maze[1][1] = 1;
+	dfs(1,1);
+	for(int i = 0; i < minLength; ++i){
+		printf("(%d, %d)\n",resx[i]-1,resy[i]-1);
+	}
+	return 0;
 }
