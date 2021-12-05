@@ -1,0 +1,9 @@
+C:\Users\hsshh\source\repos\graphics_project3\bin\Debug\graphics_project3.exe
+C:\Users\hsshh\source\repos\graphics_project3\bin\Debug\graphics_project3.pdb
+C:\Users\hsshh\source\repos\graphics_project3\obj\Debug\graphics_project3.csproj.AssemblyReference.cache
+C:\Users\hsshh\source\repos\graphics_project3\obj\Debug\graphics_project3.Form1.resources
+C:\Users\hsshh\source\repos\graphics_project3\obj\Debug\graphics_project3.Properties.Resources.resources
+C:\Users\hsshh\source\repos\graphics_project3\obj\Debug\graphics_project3.csproj.GenerateResource.cache
+C:\Users\hsshh\source\repos\graphics_project3\obj\Debug\graphics_project3.csproj.CoreCompileInputs.cache
+C:\Users\hsshh\source\repos\graphics_project3\obj\Debug\graphics_project3.exe
+C:\Users\hsshh\source\repos\graphics_project3\obj\Debug\graphics_project3.pdb
